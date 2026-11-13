@@ -6,3 +6,4 @@ __pycache__/
 *.vcd
 *.vvp
 06_Simulation/*.compile.log
+03_AI_Model/features.npz

@@ -1,6 +1,6 @@
 # Verification report (auto-generated)
 
-Generated 2026-11-13 06:41 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
+Generated 2026-11-13 07:14 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
 
 | Testbench | Unit under test | Input | Expected | Waveform |
 |---|---|---|---|---|

@@ -6,3 +6,4 @@ tb_mac                 PASS
 tb_memory              PASS
 tb_output              PASS
 tb_fir                 PASS
+tb_nn                  PASS

@@ -1,0 +1,77 @@
+{
+ "synthetic": false,
+ "train_beats": 50815,
+ "test_beats": 47380,
+ "test_abnormal": 5352,
+ "S1": 6,
+ "conf_thr": 1220,
+ "float": {
+  "confusion[[TN,FP],[FN,TP]]": [
+   [
+    37228,
+    4800
+   ],
+   [
+    1149,
+    4203
+   ]
+  ],
+  "accuracy": 0.8744406922752216,
+  "sensitivity": 0.7853139013452914,
+  "specificity": 0.8857904254306652,
+  "precision": 0.4668443852049317,
+  "f1": 0.5855799373040752
+ },
+ "quantized": {
+  "confusion[[TN,FP],[FN,TP]]": [
+   [
+    37222,
+    4806
+   ],
+   [
+    1153,
+    4199
+   ]
+  ],
+  "accuracy": 0.8742296327564373,
+  "sensitivity": 0.7845665171898356,
+  "specificity": 0.8856476634624536,
+  "precision": 0.4662965019433648,
+  "f1": 0.5849411436929721
+ },
+ "float_vs_quant_agreement": 0.9919375263824398,
+ "low_confidence_fraction": 0.16490080202617138,
+ "accuracy_on_confident": 0.9150302019359567,
+ "accuracy_on_low_conf": 0.6676052732625112,
+ "features": [
+  "rr_prev_s",
+  "hr_avg_bpm",
+  "qrs_dur_ms",
+  "r_amp_mV",
+  "qrs_energy",
+  "win_mean_mV",
+  "win_var_mV2",
+  "rr_std_ms"
+ ],
+ "feat_mu": [
+  0.7783419156635991,
+  81.08725218578562,
+  46.819344681681635,
+  1.3365371760177858,
+  0.06895694354967247,
+  0.009308920412672617,
+  0.16069196005905184,
+  71.82418843791726
+ ],
+ "feat_sigma": [
+  0.4961028690111761,
+  17.941727459324532,
+  20.35490179605821,
+  0.9383734747924322,
+  0.06711009747703064,
+  0.03990235160891287,
+  0.1627139450151209,
+  409.0129463619446
+ ],
+ "split": "DS1 train / DS2 test by record (patient-independent; 202 dropped, same patient as 201)"
+}

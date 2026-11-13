@@ -9,6 +9,7 @@ META = {
  "mac": ("mac_unit (5 configs)", "directed saturation/priority cases + 40k random ops incl. mid-run reset", "independent 64-bit reference: acc, overflow flag, valid timing", "-"),
  "memory": ("regfile_sync, sample_buffer", "40k random read/write cycles, mid-run reset", "independent shadow models", "-"),
  "output": ("output_fifo", "90k random cycles in push-heavy / pop-heavy / balanced phases", "log-based model incl. full/empty/count/overflow/underflow", "-"),
+ "nn": ("nn_engine + nn_block (private MAC PIPE=0/1)", "64 test vectors from the trained 8-16-2 model; 300 random stress trials (full-range int8 weights, int24 biases, random shift/threshold); tie; start-while-busy; reset mid-inference", "bit-exact Python golden (nn_golden.infer_int) and in-TB 64-bit integer reference: scores, class, margin, low-confidence flag; latency 197 (PIPE0) / 215 (PIPE1) clocks", "tb_nn.vcd"),
  "fir": ("fir_engine + fir_block (private MAC PIPE=0/1)", "ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset", "Python bit-exact golden (ECG) and in-TB integer reference (stress)", "-"),
 }
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")

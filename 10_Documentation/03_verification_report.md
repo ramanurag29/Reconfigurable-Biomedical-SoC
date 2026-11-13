@@ -1,6 +1,6 @@
 # Verification report (auto-generated)
 
-Generated 2026-11-13 07:17 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
+Generated 2026-11-13 07:20 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
 
 | Testbench | Unit under test | Input | Expected | Waveform |
 |---|---|---|---|---|
@@ -11,6 +11,7 @@ Generated 2026-11-13 07:17 by `11_Scripts/make_verification_report.py` from `09_
 | tb_mac | mac_unit (5 configs) | directed saturation/priority cases + 40k random ops incl. mid-run reset | independent 64-bit reference: acc, overflow flag, valid timing | - |
 | tb_memory | regfile_sync, sample_buffer | 40k random read/write cycles, mid-run reset | independent shadow models | - |
 | tb_output | output_fifo | 90k random cycles in push-heavy / pop-heavy / balanced phases | log-based model incl. full/empty/count/overflow/underflow | - |
+| tb_nn | nn_engine + nn_block (private MAC PIPE=0/1) | 64 test vectors from the trained 8-16-2 model; 300 random stress trials (full-range int8 weights, int24 biases, random shift/threshold); tie; start-while-busy; reset mid-inference | bit-exact Python golden (nn_golden.infer_int) and in-TB 64-bit integer reference: scores, class, margin, low-confidence flag; latency 197 (PIPE0) / 215 (PIPE1) clocks | tb_nn.vcd |
 | tb_fir | fir_engine + fir_block (private MAC PIPE=0/1) | ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset | Python bit-exact golden (ECG) and in-TB integer reference (stress) | - |
 
 ## Results (actual, copied from simulation logs)
@@ -46,6 +47,15 @@ Generated 2026-11-13 07:17 by `11_Scripts/make_verification_report.py` from `09_
 | tb_memory | **overall** | **PASS** |
 | tb_output | output_fifo 16x16: 90000 cycles; full=19873 empty=19432 overflow-events=12225 underflow-events=12058 — errors=0 | PASS |
 | tb_output | **overall** | **PASS** |
+| tb_nn | P1 trained-model vectors=64 —  | info |
+| tb_nn | P1 python-golden — errors=0 | PASS |
+| tb_nn | P2 latency PIPE0 min/max=197/197 PIPE1 min/max=215/215 cycles —  | info |
+| tb_nn | P2 latency — errors=0 | PASS |
+| tb_nn | P3 random-stress — errors=0 | PASS |
+| tb_nn | P4 tie — errors=0 | PASS |
+| tb_nn | P5 start-while-busy — errors=0 | PASS |
+| tb_nn | P6 reset — errors=0 | PASS |
+| tb_nn | **overall** | **PASS** |
 | tb_fir | latency 16 taps — sampley: PIPE0=19 clk, PIPE1=20 clk; MAC-busy cycles 18/19 | PASS |
 | tb_fir | ECG 16-tap vs Python golden — outputs=3600/3600 errors=0 | PASS |
 | tb_fir | ECG 8-tap vs Python golden — outputs=3600/3600 errors=0 | PASS |

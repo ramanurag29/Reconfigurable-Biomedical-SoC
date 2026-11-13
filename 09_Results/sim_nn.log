@@ -1,0 +1,11 @@
+VCD info: dumpfile 06_Simulation/tb_nn.vcd opened for output.
+[P1 trained-model vectors=64]
+[P1 python-golden] errors=0 -> PASS
+[P2 latency PIPE0 min/max=197/197 PIPE1 min/max=215/215 cycles]
+[P2 latency] errors=0 -> PASS
+[P3 random-stress] errors=0 -> PASS
+[P4 tie] errors=0 -> PASS
+[P5 start-while-busy] errors=0 -> PASS
+[P6 reset] errors=0 -> PASS
+ALL TESTS PASSED
+05_Testbench/tb_nn.v:141: $finish called at 1375176000 (1ps)

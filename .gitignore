@@ -1,0 +1,7 @@
+.venv/
+01_Dataset/*.zip
+01_Dataset/mit-bih-arrhythmia-database-1.0.0/
+__pycache__/
+*.pyc
+*.vcd
+*.vvp

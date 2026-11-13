@@ -1,0 +1,8 @@
+VCD info: dumpfile 06_Simulation/tb_input_formatter_ecg.vcd opened for output.
+[reset_state] errors=0 -> PASS
+[gapped_stream] samples=3600 checksum=-2283 errors=0 -> PASS
+[back_to_back] samples=3600 checksum=-2283 errors=0 -> PASS
+[reset_recovery] samples=3600 checksum=-2283 errors=0 -> PASS
+
+*** ALL TESTS PASSED (3600 ECG samples, 3 streams) ***
+05_Testbench/tb_input_formatter_ecg.v:104: $finish called at 360245000 (1ps)

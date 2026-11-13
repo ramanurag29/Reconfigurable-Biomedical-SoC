@@ -1,0 +1,12 @@
+[scale points + overrange] errors=0
+[boundary transitions 2046 pts] errors=0
+[ramp 3072 pts] errors=0 max|err|=0.976562 mV (LSB/2=0.976562 mV) latency=12 clk
+[sine 360 pts] errors=0
+[random 3000 pts incl. out-of-range] errors=0
+[hold behaviour] errors=0
+[bypass] errors=0
+[reset during conversion] errors=0
+conversions=8489  latency=12 clk  quantization max|err|=0.976562 mV
+
+*** ALL TESTS PASSED (behavioural SAR ADC, 8489 conversions x 2 DUTs) ***
+05_Testbench/tb_adc.v:109: $finish called at 1188786000 (1ps)

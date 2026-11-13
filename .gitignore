@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 *.vcd
 *.vvp
+06_Simulation/*.compile.log

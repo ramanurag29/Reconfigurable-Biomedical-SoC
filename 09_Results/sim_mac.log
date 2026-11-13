@@ -1,0 +1,8 @@
+[MAC 32b sat  PIPE=0] checked=34826 overflow_events=1907 errors=0 -> PASS
+[MAC 32b sat  PIPE=1] checked=34826 overflow_events=1907 errors=0 -> PASS
+[MAC 24b sat  PIPE=0] checked=34826 overflow_events=8220 errors=0 -> PASS
+[MAC 24b wrap PIPE=0] checked=34826 overflow_events=8220 errors=0 -> PASS
+[MAC 24b wrap PIPE=1] checked=34826 overflow_events=8220 errors=0 -> PASS
+
+*** ALL TESTS PASSED (mac_unit, 5 configs) ***
+05_Testbench/tb_mac.v:104: $finish called at 460235000 (1ps)

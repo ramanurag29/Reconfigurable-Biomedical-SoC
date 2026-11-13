@@ -1,7 +1,7 @@
 # Reconfigurable Biomedical SoC — System Architecture (v0.1)
 
 **Status key used throughout:** `[IMPL+SIM]` implemented and simulated · `[SPEC]` specified only, not yet written · `[OPEN]` decision pending.
-At the time of writing, only `input_formatter` and the ECG→hex pipeline are `[IMPL+SIM]`. Everything else below is a specification.
+`[IMPL+SIM]` so far (all pass `11_Scripts/regress.sh`; 9/9 injected bugs caught): `input_formatter`, `sar_controller` (exhaustive 1024 codes), behavioural S&H / comparator / CDAC / `adc_frontend_behav` (incl. bypass), `mac_unit` (5 configs, randomized + directed), and the ECG→codes pipeline. Everything else below is a specification. No synthesis or timing results exist yet.
 
 ---
 
@@ -74,7 +74,7 @@ At the time of writing, only `input_formatter` and the ECG→hex pipeline are `[
 
 **Output scaling (FIR):** `y = sat11( (acc + 2^(S−1)) >>> S )`, `S = 11` default (coefficient fractional bits), round-half-up, saturate to −512…+511. `S` is a register. **NN:** after layer 1, `a = sat_relu8((acc1 + bias) >>> S1)` with `S1` chosen at quantization time. Overflow/saturation events increment a sticky counter.
 
-**Quantisation convention `[OPEN] D1`** — see §10.
+**Quantisation convention D1 = B (decided):** `D = clamp(floor(Vin / LSB), 0, 1023)`, `LSB = Vref/2^N = 1.953 mV`; reconstruction at bin centre, error ≤ LSB/2; Vin = 1.0 V → D = 512 → x = 0 exactly. `mac_unit` requires `ACC_W ≥ A_W+B_W` (checked at elaboration).
 
 ## 5. Memory map `[SPEC]` (12-bit word address, 32-bit data)
 
@@ -123,6 +123,6 @@ Behavioural ADC (simulated) → digital RTL (simulated, then synthesized/placed 
 Risks: (1) NN data — class imbalance and leakage; mitigation: split by record. (2) Python 3.14 may lack PyTorch wheels; mitigation: NumPy/scikit-learn or a separate 3.12 env. (3) Flop-based memories may dominate area and congestion; mitigation: early OpenLane dry-run. (4) Scheduler is the largest scope-creep risk; mitigation: fixed-priority first, other policies later. (5) ECG uses only ~27 % of the ADC span (record 100), so the 8-bit vs 10-bit experiment needs per-record scaling. (6) No MATLAB confirmed: `.m` files cannot be validated until confirmed.
 
 ## 10. Open decisions
-- **D1 (convention):** A) `D = round(Vin/Vref·1023)` as in the project prompt (current Python/M1) vs B) `D = floor(Vin/Vref·1024)` which is what an ideal SAR produces. Recommendation: B for the SAR model and its testbench, keeping A only for MATLAB-vs-RTL if both are documented. Pending your choice.
-- **D2:** FIR output kept at 11 b saturated (this document) vs 12 b to avoid saturation.
+- **D1 (convention): RESOLVED → B** (`floor(Vin/Vref·1024)`), deviating from the prompt's `round(…·1023)` because that is what a binary-search SAR produces; Python reference updated and re-verified.
+- **D2:** FIR output 11 b saturated (default, assumed) vs 12 b — revisit when the FIR golden model shows saturation counts.
 - **D3:** default task priorities (§7).

@@ -1,0 +1,4 @@
+[ECG 3600 samples: PWL volts -> SAR ADC -> formatter vs Python golden] checksum=-2289 errors=0
+
+*** ALL TESTS PASSED (ECG through behavioural ADC) ***
+05_Testbench/tb_adc_ecg.v:48: $finish called at 504075000 (1ps)

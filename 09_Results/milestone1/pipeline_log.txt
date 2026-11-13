@@ -1,0 +1,35 @@
+record 100: 650000 samples @ 360.0 Hz, channel MLII (mV), 2274 annotations
+{
+  "record": "100",
+  "channel": "MLII",
+  "fs_hz": 360.0,
+  "start_s": 10.0,
+  "n_samples": 3600,
+  "bits": 10,
+  "vref": 2.0,
+  "vcm": 1.0,
+  "vswing": [
+    0.5,
+    1.5
+  ],
+  "lsb_mV": 1.953125,
+  "xref_mV": 1.448820134385809,
+  "gain_V_per_mV": 0.3451084010590193,
+  "front_end_clipped_samples": 0,
+  "adc_saturated_samples": 0,
+  "code_min": 470,
+  "code_max": 739,
+  "codes_used": 156,
+  "signed_min": -42,
+  "signed_max": 227,
+  "signed_sum": -2289,
+  "err_max_abs_mV": 0.9760814999999479,
+  "err_rms_mV": 0.5583775704013891,
+  "half_lsb_mV": 0.9765625,
+  "quant_SNR_dB": 40.05193014762532,
+  "notch": false,
+  "bandpass_Hz": [
+    0.5,
+    40.0
+  ]
+}

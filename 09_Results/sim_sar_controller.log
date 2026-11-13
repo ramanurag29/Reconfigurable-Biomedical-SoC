@@ -1,0 +1,5 @@
+[sar_controller SC=1 exhaustive 1024 codes] errors=0 -> PASS
+[sar_controller SC=3 exhaustive 1024 codes] errors=0 -> PASS
+
+*** ALL TESTS PASSED (sar_controller) ***
+05_Testbench/tb_sar_controller.v:87: $finish called at 165545000 (1ps)

@@ -1,0 +1,2 @@
+taps= 8 dc_gain=1.0000 rms_err=0.278 LSB sat=0 ripple=1.31 dB  stopband(>=90Hz)=-18.3 dB
+taps=16 dc_gain=1.0000 rms_err=0.279 LSB sat=0 ripple=1.78 dB  stopband(>=90Hz)=-46.8 dB

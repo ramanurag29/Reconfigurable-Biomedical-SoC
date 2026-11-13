@@ -1,0 +1,9 @@
+[latency 16 taps] sample->y: PIPE0=19 clk, PIPE1=20 clk; MAC-busy cycles 18/19 -> PASS
+[ECG 16-tap vs Python golden] outputs=3600/3600 errors=0 -> PASS
+[ECG 8-tap vs Python golden] outputs=3600/3600 errors=0 -> PASS
+[stress 600 trials x 24 samples, random taps/shift/coef; saturating outputs seen=11203] errors=0 -> PASS
+[overrun flagged, engine recovers, reset clears] errors=0 -> PASS
+[reset during computation] errors=0 -> PASS
+
+*** ALL TESTS PASSED (fir_block, PIPE=0 and PIPE=1) ***
+05_Testbench/tb_fir.v:135: $finish called at 4550506000 (1ps)

@@ -1,0 +1,4 @@
+[regfile 160x8 (no-reset) / 16x12 (reset-clear) / sample_buffer 64x11, 40k random cycles] errors=0 -> PASS
+
+*** ALL TESTS PASSED (memory) ***
+05_Testbench/tb_memory.v:56: $finish called at 400046000 (1ps)

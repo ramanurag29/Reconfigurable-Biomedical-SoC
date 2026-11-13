@@ -3,3 +3,6 @@ tb_sar_controller      PASS
 tb_adc                 PASS
 tb_adc_ecg             PASS
 tb_mac                 PASS
+tb_memory              PASS
+tb_output              PASS
+tb_fir                 PASS

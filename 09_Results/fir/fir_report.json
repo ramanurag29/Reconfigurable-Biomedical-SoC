@@ -1,0 +1,58 @@
+{
+ "n_samples": 3600,
+ "shift": 11,
+ "fc_hz": 40.0,
+ "fs_hz": 360.0,
+ "taps8": {
+  "coef_q": [
+   13,
+   90,
+   334,
+   587,
+   587,
+   334,
+   90,
+   13
+  ],
+  "dc_gain": 1.0,
+  "saturated_outputs": 0,
+  "y_min": -39,
+  "y_max": 216,
+  "rms_err_vs_float_lsb": 0.27760842126774954,
+  "max_err_vs_float_lsb": 0.5000000000000018,
+  "passband_ripple_db_0_25Hz": 1.3103440010296246,
+  "stopband_worst_gain_db_ge90Hz": -18.306045733153052,
+  "gain_db_at_50Hz": -5.339879470501407,
+  "y_sum": -2141
+ },
+ "taps16": {
+  "coef_q": [
+   -6,
+   -12,
+   -18,
+   0,
+   71,
+   199,
+   346,
+   444,
+   444,
+   346,
+   199,
+   71,
+   0,
+   -18,
+   -12,
+   -6
+  ],
+  "dc_gain": 1.0,
+  "saturated_outputs": 0,
+  "y_min": -39,
+  "y_max": 212,
+  "rms_err_vs_float_lsb": 0.2786152573203994,
+  "max_err_vs_float_lsb": 0.5024063993559196,
+  "passband_ripple_db_0_25Hz": 1.779710483193343,
+  "stopband_worst_gain_db_ge90Hz": -46.786613629451494,
+  "gain_db_at_50Hz": -10.96734938785097,
+  "y_sum": -2171
+ }
+}

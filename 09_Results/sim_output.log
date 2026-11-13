@@ -1,0 +1,4 @@
+[output_fifo 16x16: 90000 cycles; full=19873 empty=19432 overflow-events=12225 underflow-events=12058] errors=0 -> PASS
+
+*** ALL TESTS PASSED (output fifo) ***
+05_Testbench/tb_output.v:43: $finish called at 900026000 (1ps)

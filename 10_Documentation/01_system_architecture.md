@@ -72,7 +72,7 @@
 **NN:** int8×int8 product 16 b; layer 1 (8 terms) → 19 b; layer 2 (16 terms, post-ReLU activations 0…127) → 19 b. 13 b headroom on layer 1.
 **MAC operand ports are 11 b × 12 b**; NN operands are sign-extended into them.
 
-**Output scaling (FIR):** `y = sat11( (acc + 2^(S−1)) >>> S )`, `S = 11` default (coefficient fractional bits), round-half-up, saturate to −512…+511. `S` is a register. **NN:** after layer 1, `a = sat_relu8((acc1 + bias) >>> S1)` with `S1` chosen at quantization time. Overflow/saturation events increment a sticky counter.
+**Output scaling (FIR):** `y = sat11( (acc + 2^(S−1)) >>> S )`, `S = 11` default (coefficient fractional bits), round-half-up, saturate to the 11-bit signed range −1024…+1023 (input samples only occupy −512…+511, so the output has 1 bit of overshoot headroom). `S` is a register. **NN:** after layer 1, `a = sat_relu8((acc1 + bias) >>> S1)` with `S1` chosen at quantization time. Overflow/saturation events increment a sticky counter.
 
 **Quantisation convention D1 = B (decided):** `D = clamp(floor(Vin / LSB), 0, 1023)`, `LSB = Vref/2^N = 1.953 mV`; reconstruction at bin centre, error ≤ LSB/2; Vin = 1.0 V → D = 512 → x = 0 exactly. `mac_unit` requires `ACC_W ≥ A_W+B_W` (checked at elaboration).
 
@@ -124,5 +124,5 @@ Risks: (1) NN data — class imbalance and leakage; mitigation: split by record.
 
 ## 10. Open decisions
 - **D1 (convention): RESOLVED → B** (`floor(Vin/Vref·1024)`), deviating from the prompt's `round(…·1023)` because that is what a binary-search SAR produces; Python reference updated and re-verified.
-- **D2:** FIR output 11 b saturated (default, assumed) vs 12 b — revisit when the FIR golden model shows saturation counts.
+- **D2:** FIR output 11 b signed (−1024…+1023) saturated (default, assumed) vs 12 b — revisit when the FIR golden model shows saturation counts.
 - **D3:** default task priorities (§7).

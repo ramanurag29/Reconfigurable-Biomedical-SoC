@@ -1,0 +1,19 @@
+Design Name: task_scheduler
+Run Directory: /openlane/designs/biomed_dry/runs/dry2
+----------------------------------------
+
+Magic DRC Summary:
+Source: /openlane/designs/biomed_dry/runs/dry2/reports/signoff/drc.rpt
+Total Magic DRC violations is 0
+----------------------------------------
+
+LVS Summary:
+Source: /openlane/designs/biomed_dry/runs/dry2/logs/signoff/39-task_scheduler.lef.lvs.log
+Number of nets: 5424                       |Number of nets: 5424                       
+Design is LVS clean.
+----------------------------------------
+
+Antenna Summary:
+Source: /openlane/designs/biomed_dry/runs/dry2/logs/signoff/41-arc.log
+Pin violations: 101
+Net violations: 98

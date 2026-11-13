@@ -8,3 +8,4 @@ __pycache__/
 06_Simulation/*.compile.log
 03_AI_Model/features.npz
 03_AI_Model/features.npz
+pycache/

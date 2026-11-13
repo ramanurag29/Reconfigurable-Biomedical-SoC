@@ -1,0 +1,43 @@
+VCD info: dumpfile 06_Simulation/tb_scheduler.vcd opened for output.
+== tb_scheduler (MAC PIPE=0) ==
+T1 FIR alone
+[16-tap ops=17 tasks=1 preempts=0] -> PASS
+[aits <=4 cycles when MAC is free] -> PASS
+[T1b 8-tap x2 ops=18 tasks=2] -> PASS
+T2 NN alone
+[T2 NN ops=178 tasks=1] -> PASS
+T3 fixed priority: NN preempts FIR (context save/restore)
+[at least one preemption happened] -> PASS
+[T3 all ops executed exactly once] -> PASS
+[T3 restore overhead counted] -> PASS
+   preempts=1 overhead=2 FIRwait=202 FIRlat=220 NNlat=197
+T4 fixed priority: low-priority FIR waits for NN
+[mption of the higher-priority NN] -> PASS
+[T4 FIR waited for the NN] -> PASS
+   FIRwait=178 FIRlat=196 NNlat=197
+T5 round-robin quantum=4
+[5 RR time-slices between clients] -> PASS
+[T5 ops exact] -> PASS
+   preempts=9 overhead=18 FIRlat=65 NNlat=244
+T6 mode-based (FIR favoured)
+[T6 FIR preempted NN] -> PASS
+[T6 ops exact] -> PASS
+[T6b NN preempted FIR] -> PASS
+T7 preemption disabled
+[ preemption, results still exact] -> PASS
+T8 deadline monitor
+[T8a NN misses 50-cycle deadline] -> PASS
+[T8b NN meets 1000-cycle deadline] -> PASS
+T9 FIR stream during NN
+[T9 10 FIR + 1 NN, ops exact] -> PASS
+[T9 no FIR overrun] -> PASS
+[ NN was preempted by FIR samples] -> PASS
+   preempts=8 NNlat=392 FIRmaxlat=19 total=454 macops=348
+T10 reset during contention
+[s and scheduler idle after reset] -> PASS
+[T10 clean run after reset] -> PASS
+T11 300 random trials
+[als: FIR+NN bit-exact, ops exact] -> PASS
+---- fir results=320 nn results=311 checks=1010 errors=0
+ALL TESTS PASSED
+05_Testbench/tb_scheduler.v:343: $finish called at 750020000 (1ps)

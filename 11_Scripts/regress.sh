@@ -12,7 +12,7 @@ if [ -n "$RETRAIN" ] || [ ! -f 06_Simulation/mem/nn_params.vh ]; then
 fi
 R=04_RTL; T=05_Testbench; fail=0
 ADC="$R/adc/sar_controller.v $R/adc/sample_hold_behav.v $R/adc/comparator_behav.v $R/adc/cdac_behav.v $R/adc/adc_frontend_behav.v"
-declare -a NAMES=(input_formatter_ecg sar_controller adc adc_ecg mac memory output fir nn)
+declare -a NAMES=(input_formatter_ecg sar_controller adc adc_ecg mac memory output fir nn scheduler scheduler_p1)
 declare -A SRC=(
  [input_formatter_ecg]="$R/interfaces/input_formatter.v $T/tb_input_formatter_ecg.v"
  [sar_controller]="$R/adc/sar_controller.v $T/tb_sar_controller.v"
@@ -22,10 +22,13 @@ declare -A SRC=(
  [memory]="$R/memory/regfile_sync.v $R/memory/sample_buffer.v $T/tb_memory.v"
  [output]="$R/memory/output_fifo.v $T/tb_output.v"
  [fir]="$R/mac/mac_unit.v $R/memory/regfile_sync.v $R/fir/fir_engine.v $R/fir/fir_block.v $T/tb_fir.v"
- [nn]="$R/mac/mac_unit.v $R/memory/regfile_sync.v $R/neural_network/nn_engine.v $R/neural_network/nn_block.v $T/tb_nn.v")
+ [nn]="$R/mac/mac_unit.v $R/memory/regfile_sync.v $R/neural_network/nn_engine.v $R/neural_network/nn_block.v $T/tb_nn.v"
+  [scheduler]="$R/mac/mac_unit.v $R/fir/fir_engine.v $R/neural_network/nn_engine.v $R/scheduler/task_scheduler.v $T/tb_scheduler.v"
+  [scheduler_p1]="$R/mac/mac_unit.v $R/fir/fir_engine.v $R/neural_network/nn_engine.v $R/scheduler/task_scheduler.v $T/tb_scheduler.v")
+declare -A FLAGS=([scheduler_p1]="-Ptb_scheduler.PIPE=1")
 : > 09_Results/regression_summary.txt
 for n in "${NAMES[@]}"; do
-  if iverilog -g2012 -o 06_Simulation/tb_$n.vvp ${SRC[$n]} 2> 06_Simulation/tb_$n.compile.log; then
+  if iverilog -g2012 ${FLAGS[$n]} -o 06_Simulation/tb_$n.vvp ${SRC[$n]} 2> 06_Simulation/tb_$n.compile.log; then
     vvp 06_Simulation/tb_$n.vvp > 09_Results/sim_$n.log 2>&1
     if grep -q "ALL TESTS PASSED" 09_Results/sim_$n.log; then r=PASS; else r=FAIL; fail=1; fi
   else r="FAIL(compile)"; fail=1; fi

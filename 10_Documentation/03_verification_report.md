@@ -1,6 +1,6 @@
 # Verification report (auto-generated)
 
-Generated 2026-11-13 07:20 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
+Generated 2026-11-13 08:45 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
 
 | Testbench | Unit under test | Input | Expected | Waveform |
 |---|---|---|---|---|
@@ -13,6 +13,8 @@ Generated 2026-11-13 07:20 by `11_Scripts/make_verification_report.py` from `09_
 | tb_output | output_fifo | 90k random cycles in push-heavy / pop-heavy / balanced phases | log-based model incl. full/empty/count/overflow/underflow | - |
 | tb_nn | nn_engine + nn_block (private MAC PIPE=0/1) | 64 test vectors from the trained 8-16-2 model; 300 random stress trials (full-range int8 weights, int24 biases, random shift/threshold); tie; start-while-busy; reset mid-inference | bit-exact Python golden (nn_golden.infer_int) and in-TB 64-bit integer reference: scores, class, margin, low-confidence flag; latency 197 (PIPE0) / 215 (PIPE1) clocks | tb_nn.vcd |
 | tb_fir | fir_engine + fir_block (private MAC PIPE=0/1) | ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset | Python bit-exact golden (ECG) and in-TB integer reference (stress) | - |
+| tb_scheduler | task_scheduler + shared mac_unit + fir_engine + nn_engine (MAC PIPE=0) | fixed-priority / round-robin / mode-based contention, preemption with accumulator save/restore, non-preemptive mode, deadline monitor, FIR stream during NN, reset mid-contention, 300 random trials | bit-exact in-TB integer golden for FIR and NN results; exact MAC-op accounting (FIR 1+T, NN 178); preemption counts | tb_scheduler.vcd |
+| tb_scheduler_p1 | task_scheduler with pipelined MAC (PIPE=1) | same testbench, -Ptb_scheduler.PIPE=1 | same checks; exercises the PIPE+1 restore wait and the drain-before-switch rule | - |
 
 ## Results (actual, copied from simulation logs)
 
@@ -63,6 +65,54 @@ Generated 2026-11-13 07:20 by `11_Scripts/make_verification_report.py` from `09_
 | tb_fir | overrun flagged, engine recovers, reset clears — errors=0 | PASS |
 | tb_fir | reset during computation — errors=0 | PASS |
 | tb_fir | **overall** | **PASS** |
+| tb_scheduler | 16-tap ops=17 tasks=1 preempts=0 —  | PASS |
+| tb_scheduler | aits <=4 cycles when MAC is free —  | PASS |
+| tb_scheduler | T1b 8-tap x2 ops=18 tasks=2 —  | PASS |
+| tb_scheduler | T2 NN ops=178 tasks=1 —  | PASS |
+| tb_scheduler | at least one preemption happened —  | PASS |
+| tb_scheduler | T3 all ops executed exactly once —  | PASS |
+| tb_scheduler | T3 restore overhead counted —  | PASS |
+| tb_scheduler | mption of the higher-priority NN —  | PASS |
+| tb_scheduler | T4 FIR waited for the NN —  | PASS |
+| tb_scheduler | 5 RR time-slices between clients —  | PASS |
+| tb_scheduler | T5 ops exact —  | PASS |
+| tb_scheduler | T6 FIR preempted NN —  | PASS |
+| tb_scheduler | T6 ops exact —  | PASS |
+| tb_scheduler | T6b NN preempted FIR —  | PASS |
+| tb_scheduler |  preemption, results still exact —  | PASS |
+| tb_scheduler | T8a NN misses 50-cycle deadline —  | PASS |
+| tb_scheduler | T8b NN meets 1000-cycle deadline —  | PASS |
+| tb_scheduler | T9 10 FIR + 1 NN, ops exact —  | PASS |
+| tb_scheduler | T9 no FIR overrun —  | PASS |
+| tb_scheduler |  NN was preempted by FIR samples —  | PASS |
+| tb_scheduler | s and scheduler idle after reset —  | PASS |
+| tb_scheduler | T10 clean run after reset —  | PASS |
+| tb_scheduler | als: FIR+NN bit-exact, ops exact —  | PASS |
+| tb_scheduler | **overall** | **PASS** |
+| tb_scheduler_p1 | 16-tap ops=17 tasks=1 preempts=0 —  | PASS |
+| tb_scheduler_p1 | aits <=4 cycles when MAC is free —  | PASS |
+| tb_scheduler_p1 | T1b 8-tap x2 ops=18 tasks=2 —  | PASS |
+| tb_scheduler_p1 | T2 NN ops=178 tasks=1 —  | PASS |
+| tb_scheduler_p1 | at least one preemption happened —  | PASS |
+| tb_scheduler_p1 | T3 all ops executed exactly once —  | PASS |
+| tb_scheduler_p1 | T3 restore overhead counted —  | PASS |
+| tb_scheduler_p1 | mption of the higher-priority NN —  | PASS |
+| tb_scheduler_p1 | T4 FIR waited for the NN —  | PASS |
+| tb_scheduler_p1 | 5 RR time-slices between clients —  | PASS |
+| tb_scheduler_p1 | T5 ops exact —  | PASS |
+| tb_scheduler_p1 | T6 FIR preempted NN —  | PASS |
+| tb_scheduler_p1 | T6 ops exact —  | PASS |
+| tb_scheduler_p1 | T6b NN preempted FIR —  | PASS |
+| tb_scheduler_p1 |  preemption, results still exact —  | PASS |
+| tb_scheduler_p1 | T8a NN misses 50-cycle deadline —  | PASS |
+| tb_scheduler_p1 | T8b NN meets 1000-cycle deadline —  | PASS |
+| tb_scheduler_p1 | T9 10 FIR + 1 NN, ops exact —  | PASS |
+| tb_scheduler_p1 | T9 no FIR overrun —  | PASS |
+| tb_scheduler_p1 |  NN was preempted by FIR samples —  | PASS |
+| tb_scheduler_p1 | s and scheduler idle after reset —  | PASS |
+| tb_scheduler_p1 | T10 clean run after reset —  | PASS |
+| tb_scheduler_p1 | als: FIR+NN bit-exact, ops exact —  | PASS |
+| tb_scheduler_p1 | **overall** | **PASS** |
 
 **Overall: ALL PASS**
 

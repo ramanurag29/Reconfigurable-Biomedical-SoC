@@ -41,6 +41,7 @@ module fir_engine #(
     output reg                      y_sat,
     output reg                      y_ovf,
     output wire                     busy,
+    output wire                     at_boundary,   // 1 = safe preemption point (no MAC result pending use)
     output reg                      overrun,
     output reg  [7:0]               last_latency
 );
@@ -67,6 +68,7 @@ module fir_engine #(
     assign mac_clear = (state == S_CLR) && mac_grant;
     assign mac_en    = (state == S_MAC) && mac_grant;
     assign busy      = (state != S_IDLE) || pend;
+    assign at_boundary = (state == S_CLR) || (state == S_MAC);
 
     // rounding + shift + saturation of the final accumulator
     wire [ACC_W:0] rnd_u = (shift_cfg == 5'd0) ? {(ACC_W+1){1'b0}}

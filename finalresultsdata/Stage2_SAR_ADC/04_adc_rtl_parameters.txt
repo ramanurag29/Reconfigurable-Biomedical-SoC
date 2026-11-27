@@ -1,0 +1,9 @@
+04_RTL/adc/comparator_behav.v:4:module comparator_behav #(parameter real OFFSET = 0.0) (
+04_RTL/adc/sar_controller.v:14:    parameter N             = 10,
+04_RTL/adc/sar_controller.v:15:    parameter SAMPLE_CYCLES = 1
+04_RTL/adc/sar_controller.v:27:    localparam [1:0] S_IDLE = 2'd0, S_SAMP = 2'd1, S_CONV = 2'd2, S_FIN = 2'd3;
+04_RTL/adc/adc_frontend_behav.v:10:    parameter N             = 10,
+04_RTL/adc/adc_frontend_behav.v:11:    parameter real VREF     = 2.0,
+04_RTL/adc/adc_frontend_behav.v:12:    parameter real CMP_OFFSET = 0.0,
+04_RTL/adc/adc_frontend_behav.v:13:    parameter SAMPLE_CYCLES = 1
+04_RTL/adc/cdac_behav.v:4:module cdac_behav #(parameter N = 10, parameter real VREF = 2.0) (

@@ -1,0 +1,11 @@
+# Stage 2: SAR ADC math (matches RTL: N=10, VREF=2.0, D = round(Vin/Vref*1023))
+resolution N = 10 bits, codes 0..1023
+Vref = 2.0 V
+LSB = Vref/(2^N-1) = 1.9550 mV
+ideal quantization error = +/- LSB/2 = +/- 0.9775 mV (testbench measured max 0.976562 mV on 3072-pt ramp)
+ideal SNR = 6.02N+1.76 = 61.96 dB
+input common-mode 1.0 V -> code 512 -> signed 0 (code-512)
+conditioned range 0.5-1.5 V -> codes 256..767 (512 codes)
+signed range after formatter: -512..511 (11-bit signed container)
+conversion: 1 sample cycle + 10 SAR bit-cycles + 1 output = 12 clk latency (tb_adc), period SC+N+2
+8-bit comparison (Experiment 1): LSB = 7.8431 mV, SNR = 49.92 dB

@@ -9,3 +9,8 @@ __pycache__/
 03_AI_Model/features.npz
 03_AI_Model/features.npz
 pycache/
+pycache/
+*.pyc
+.venv/
+finalresultsdata.zip
+*.vcd

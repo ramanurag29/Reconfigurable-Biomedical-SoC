@@ -1,0 +1,13 @@
+# Neural network 8 -> 16 -> 2 (integer model)
+w1: shape [16, 8], min -127, max 49
+b1: shape [16], min -634, max 724
+w2: shape [2, 16], min -127, max 127
+b2: shape [2], min -148, max 148
+S1 = 6
+s1 = 25.655814463356247
+s2 = 99.95338860465957
+mu: shape [8], min 0.009308920412672617, max 81.08725218578562
+sigma: shape [8], min 0.03990235160891287, max 409.0129463619446
+
+MAC ops per inference: 8*16 + 16*2 = 160 MACs (+ bias loads); scheduler-verified total 178 MAC ops
+latency 197 clk (PIPE0) / 215 clk (PIPE1); 64 trained-model vectors bit-exact vs Python golden

@@ -46,6 +46,7 @@ module nn_engine #(
     output reg                      nn_lowconf,
     output reg                      nn_ovf,
     output wire                     busy,
+    output wire                     at_boundary,   // 1 = safe preemption point (between MAC ops)
     output reg  [15:0]              last_latency
 );
     localparam [2:0] S_IDLE = 3'd0, S_LOAD = 3'd1, S_MAC = 3'd2, S_DRAIN = 3'd3, S_FIN = 3'd4;
@@ -72,6 +73,7 @@ module nn_engine #(
     assign mac_load     = (state == S_LOAD) && mac_grant;
     assign mac_en       = (state == S_MAC)  && mac_grant;
     assign busy         = (state != S_IDLE);
+    assign at_boundary  = (state == S_LOAD) || (state == S_MAC);
 
     wire issue      = mac_load | mac_en;
     wire drain_done = (state == S_DRAIN) && (pend_ops == {2'b00, mac_acc_valid});

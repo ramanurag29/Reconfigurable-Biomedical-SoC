@@ -1,0 +1,12 @@
+`timescale 1ns/1ps
+// -----------------------------------------------------------------------------
+// fir_engine [synthesizable] : programmable FIR sequencer that drives a SHARED MAC.
+//   y[n] = sat( (sum_{k<T} h[k]*x[n-k] + 2^(S-1)) >>> S ),  T = taps (1..16), S = shift
+// The engine does not contain a multiplier: it requests the MAC (mac_req / mac_grant) and
+// issues one MAC operation per clock. The scheduler (later) owns the grant and must route
+// mac_acc_valid only to the engine that owns the MAC.
+// Formats: x signed 11b, h signed 12b (Q1.11), acc signed 32b, y signed 11b saturated.
+// Input handling: a sample arriving while busy is held (1 deep); a second one overwrites it
+//   and raises sticky `overrun`.
+// Latency: busy cycles = T+2 (PIPE=0 MAC) / T+3 (PIPE=1); sample_valid edge -> y_valid
+//   visible = T+3 / T+4 edges. last_latency reports the busy-cycle count.

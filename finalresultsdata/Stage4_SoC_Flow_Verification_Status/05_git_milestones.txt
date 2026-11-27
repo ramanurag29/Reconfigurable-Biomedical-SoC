@@ -1,0 +1,12 @@
+2026-11-17  M4: quality estimator, result manager, config/host regs, register map
+2026-11-17  checkpoint: status sync
+2026-11-16  checkpoint
+2026-11-13  Add project summary script
+2026-11-13  OpenLane dry run (task_scheduler+mac): LVS match, DRC 0, typical-corner timing met, antenna 98/101 open
+2026-11-13  Scheduler: shared-MAC task_scheduler (fixed/RR/mode, safe preemption, ctx save/restore), tb_scheduler PIPE0/1
+2026-11-13  NN engine (shared-MAC 8-16-2), bit-exact golden model, patient-independent trainer, tb_nn
+2026-11-13  NN engine (shared-MAC 8-16-2), bit-exact golden model, patient-independent trainer, tb_nn
+2026-11-13  NN engine (shared-MAC 8-16-2), bit-exact golden model, patient-independent trainer, tb_nn
+2026-11-13  Memories, FIR engine + bit-exact golden model, FIFO, auto verification report, README, block specs
+2026-11-13  SAR ADC (behavioural + controller), MAC unit, 5 self-checking TBs, regression script; D1=B
+2026-11-13  M1: ECG -> 10-bit hex -> input_formatter testbench passes; architecture v0.1

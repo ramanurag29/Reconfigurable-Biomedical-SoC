@@ -1,0 +1,31 @@
+| tb_mac | mac_unit (5 configs) | directed saturation/priority cases + 40k random ops incl. mid-run reset | independent 64-bit reference: acc, overflow flag, valid timing | - |
+| tb_memory | regfile_sync, sample_buffer | 40k random read/write cycles, mid-run reset | independent shadow models | - |
+| tb_output | output_fifo | 90k random cycles in push-heavy / pop-heavy / balanced phases | log-based model incl. full/empty/count/overflow/underflow | - |
+| tb_nn | nn_engine + nn_block (private MAC PIPE=0/1) | 64 test vectors from the trained 8-16-2 model; 300 random stress trials (full-range int8 weights, int24 biases, random shift/threshold); tie; start-while-busy; reset mid-inference | bit-exact Python golden (nn_golden.infer_int) and in-TB 64-bit integer reference: scores, class, margin, low-confidence flag; latency 197 (PIPE0) / 215 (PIPE1) clocks | tb_nn.vcd |
+| tb_fir | fir_engine + fir_block (private MAC PIPE=0/1) | ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset | Python bit-exact golden (ECG) and in-TB integer reference (stress) | - |
+| tb_mac | MAC 32b sat  PIPE=0 — checked=34826 overflow_events=1907 errors=0 | PASS |
+| tb_mac | MAC 32b sat  PIPE=1 — checked=34826 overflow_events=1907 errors=0 | PASS |
+| tb_mac | MAC 24b sat  PIPE=0 — checked=34826 overflow_events=8220 errors=0 | PASS |
+| tb_mac | MAC 24b wrap PIPE=0 — checked=34826 overflow_events=8220 errors=0 | PASS |
+| tb_mac | MAC 24b wrap PIPE=1 — checked=34826 overflow_events=8220 errors=0 | PASS |
+| tb_mac | **overall** | **PASS** |
+| tb_memory | regfile 160x8 (no-reset) / 16x12 (reset-clear) / sample_buffer 64x11, 40k random cycles — errors=0 | PASS |
+| tb_memory | **overall** | **PASS** |
+| tb_output | output_fifo 16x16: 90000 cycles; full=19873 empty=19432 overflow-events=12225 underflow-events=12058 — errors=0 | PASS |
+| tb_output | **overall** | **PASS** |
+| tb_nn | P1 trained-model vectors=64 —  | info |
+| tb_nn | P1 python-golden — errors=0 | PASS |
+| tb_nn | P2 latency PIPE0 min/max=197/197 PIPE1 min/max=215/215 cycles —  | info |
+| tb_nn | P2 latency — errors=0 | PASS |
+| tb_nn | P3 random-stress — errors=0 | PASS |
+| tb_nn | P4 tie — errors=0 | PASS |
+| tb_nn | P5 start-while-busy — errors=0 | PASS |
+| tb_nn | P6 reset — errors=0 | PASS |
+| tb_nn | **overall** | **PASS** |
+| tb_fir | latency 16 taps — sampley: PIPE0=19 clk, PIPE1=20 clk; MAC-busy cycles 18/19 | PASS |
+| tb_fir | ECG 16-tap vs Python golden — outputs=3600/3600 errors=0 | PASS |
+| tb_fir | ECG 8-tap vs Python golden — outputs=3600/3600 errors=0 | PASS |
+| tb_fir | stress 600 trials x 24 samples, random taps/shift/coef; saturating outputs seen=11203 — errors=0 | PASS |
+| tb_fir | overrun flagged, engine recovers, reset clears — errors=0 | PASS |
+| tb_fir | reset during computation — errors=0 | PASS |
+| tb_fir | **overall** | **PASS** |

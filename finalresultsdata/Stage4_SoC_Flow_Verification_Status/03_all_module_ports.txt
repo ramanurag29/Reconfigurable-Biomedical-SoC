@@ -1,0 +1,289 @@
+// ==== 04_RTL/adc/adc_frontend_behav.v
+module adc_frontend_behav #(
+    parameter N             = 10,
+    parameter real VREF     = 2.0,
+    parameter real CMP_OFFSET = 0.0,
+    parameter SAMPLE_CYCLES = 1
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    input  real         vin,
+    input  wire         start,
+    input  wire         bypass,
+    input  wire [N-1:0] bypass_data,
+    input  wire         bypass_valid,
+    output wire [N-1:0] adc_data,
+    output wire         adc_valid,
+    output wire         busy
+);
+// ==== 04_RTL/adc/cdac_behav.v
+module cdac_behav #(parameter N = 10, parameter real VREF = 2.0) (
+    input  wire [N-1:0] code,
+    output real         vdac
+);
+// ==== 04_RTL/adc/comparator_behav.v
+module comparator_behav #(parameter real OFFSET = 0.0) (
+    input  real vin,
+    input  real vdac,
+    output wire cmp_out
+);
+// ==== 04_RTL/adc/sample_hold_behav.v
+module sample_hold_behav (
+    input  wire sample_en,
+    input  real vin,
+    output real vhold
+);
+// ==== 04_RTL/adc/sar_controller.v
+module sar_controller #(
+    parameter N             = 10,
+    parameter SAMPLE_CYCLES = 1
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    input  wire         start,
+    input  wire         cmp_out,
+    output wire         sample_en,
+    output wire [N-1:0] dac_code,
+    output wire         busy,
+    output reg          done,
+    output reg  [N-1:0] data_out
+);
+// ==== 04_RTL/fir/fir_block.v
+module fir_block #(parameter PIPE = 0) (
+    input  wire                clk,
+    input  wire                rst_n,
+    input  wire                cfg_we,
+    input  wire [3:0]          cfg_addr,
+    input  wire [11:0]         cfg_wdata,
+    input  wire [4:0]          taps_cfg,
+    input  wire [4:0]          shift_cfg,
+    input  wire                sample_valid,
+    input  wire signed [10:0]  sample_in,
+    output wire                y_valid,
+    output wire signed [10:0]  y_data,
+    output wire                y_sat,
+    output wire                y_ovf,
+    output wire                busy,
+    output wire                overrun,
+    output wire [7:0]          last_latency
+);
+// ==== 04_RTL/fir/fir_engine.v
+module fir_engine #(
+    parameter X_W      = 11,
+    parameter H_W      = 12,
+    parameter ACC_W    = 32,
+    parameter MAX_TAPS = 16
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    input  wire                     sample_valid,
+    input  wire signed [X_W-1:0]    sample_in,
+    input  wire [4:0]               taps_cfg,
+    input  wire [4:0]               shift_cfg,
+    output wire [3:0]               coef_addr,
+    input  wire signed [H_W-1:0]    coef_data,
+    // shared-MAC port
+    output wire                     mac_req,
+    input  wire                     mac_grant,
+    output wire                     mac_clear,
+    output wire                     mac_en,
+    output wire signed [X_W-1:0]    mac_a,
+    output wire signed [H_W-1:0]    mac_b,
+    input  wire signed [ACC_W-1:0]  mac_acc,
+    input  wire                     mac_acc_valid,
+    input  wire                     mac_overflow,
+    // result
+    output reg                      y_valid,
+    output reg  signed [X_W-1:0]    y_data,
+    output reg                      y_sat,
+    output reg                      y_ovf,
+    output wire                     busy,
+    output wire                     at_boundary,   // 1 = safe preemption point (no MAC result pending use)
+    output reg                      overrun,
+    output reg  [7:0]               last_latency
+);
+// ==== 04_RTL/interfaces/input_formatter.v
+module input_formatter #(
+    parameter ADC_BITS = 10
+) (
+    input  wire                       clk,
+    input  wire                       rst_n,
+    input  wire                       in_valid,
+    input  wire [ADC_BITS-1:0]        adc_code,
+    output reg                        out_valid,
+    output reg  signed [ADC_BITS:0]   x_signed
+);
+// ==== 04_RTL/mac/mac_unit.v
+module mac_unit #(
+    parameter A_W      = 11,
+    parameter B_W      = 12,
+    parameter ACC_W    = 32,
+    parameter SATURATE = 1,
+    parameter PIPE     = 0
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    input  wire                     en,
+    input  wire                     clear,
+    input  wire                     load,
+    input  wire signed [A_W-1:0]    a,
+    input  wire signed [B_W-1:0]    b,
+    input  wire signed [ACC_W-1:0]  load_val,
+    output reg  signed [ACC_W-1:0]  acc,
+    output reg                      acc_valid,
+    output reg                      overflow
+);
+// ==== 04_RTL/memory/output_fifo.v
+module output_fifo #(
+    parameter W     = 16,
+    parameter DEPTH = 16
+) (
+    input  wire                  clk,
+    input  wire                  rst_n,
+    input  wire                  push,
+    input  wire [W-1:0]          din,
+    input  wire                  pop,
+    input  wire                  clr_flags,
+    output wire [W-1:0]          dout,
+    output wire                  full,
+    output wire                  empty,
+    output reg  [$clog2(DEPTH):0] count,
+    output reg                   overflow,
+    output reg                   underflow
+);
+// ==== 04_RTL/memory/regfile_sync.v
+module regfile_sync #(
+    parameter WIDTH = 12,
+    parameter DEPTH = 16,
+    parameter RESET_CLEAR = 0
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    input  wire                     we,
+    input  wire [$clog2(DEPTH)-1:0] waddr,
+    input  wire [WIDTH-1:0]         wdata,
+    input  wire [$clog2(DEPTH)-1:0] raddr,
+    output wire [WIDTH-1:0]         rdata
+);
+// ==== 04_RTL/memory/sample_buffer.v
+module sample_buffer #(
+    parameter W     = 11,
+    parameter DEPTH = 64
+) (
+    input  wire                  clk,
+    input  wire                  rst_n,
+    input  wire                  wr_en,
+    input  wire [W-1:0]          wr_data,
+    input  wire [$clog2(DEPTH)-1:0] rd_offset,
+    output wire [W-1:0]          rd_data,
+    output wire                  rd_valid,
+    output reg  [$clog2(DEPTH):0] count
+);
+// ==== 04_RTL/neural_network/nn_block.v
+module nn_block #(parameter PIPE = 0) (
+    input  wire               clk,
+    input  wire               rst_n,
+    input  wire               cfg_we,
+    input  wire [1:0]         cfg_sel,
+    input  wire [7:0]         cfg_addr,
+    input  wire [23:0]        cfg_wdata,
+    input  wire               start,
+    input  wire [4:0]         shift_cfg,
+    input  wire [15:0]        conf_thr,
+    output wire               nn_valid,
+    output wire               nn_class,
+    output wire signed [31:0] nn_score0,
+    output wire signed [31:0] nn_score1,
+    output wire [15:0]        nn_margin,
+    output wire               nn_lowconf,
+    output wire               nn_ovf,
+    output wire               busy,
+    output wire [15:0]        last_latency
+);
+// ==== 04_RTL/neural_network/nn_engine.v
+module nn_engine #(
+    parameter ACC_W = 32
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    input  wire                     start,
+    input  wire [4:0]               shift_cfg,     // S1 (hidden requantization shift)
+    input  wire [15:0]              conf_thr,
+    // external memories
+    output wire [2:0]               feat_addr,
+    input  wire signed [7:0]        feat_data,
+    output wire [7:0]               w_addr,
+    input  wire signed [7:0]        w_data,
+    output wire [4:0]               b_addr,
+    input  wire signed [23:0]       b_data,
+    // shared-MAC port
+    output wire                     mac_req,
+    input  wire                     mac_grant,
+    output wire                     mac_load,
+    output wire signed [ACC_W-1:0]  mac_load_val,
+    output wire                     mac_en,
+    output wire signed [10:0]       mac_a,
+    output wire signed [11:0]       mac_b,
+    input  wire signed [ACC_W-1:0]  mac_acc,
+    input  wire                     mac_acc_valid,
+    input  wire                     mac_overflow,
+    // result
+    output reg                      nn_valid,
+    output reg                      nn_class,
+    output reg  signed [ACC_W-1:0]  nn_score0,
+    output reg  signed [ACC_W-1:0]  nn_score1,
+    output reg  [15:0]              nn_margin,
+    output reg                      nn_lowconf,
+    output reg                      nn_ovf,
+    output wire                     busy,
+    output wire                     at_boundary,   // 1 = safe preemption point (between MAC ops)
+    output reg  [15:0]              last_latency
+);
+// ==== 04_RTL/scheduler/task_scheduler.v
+module task_scheduler #(
+    parameter ACC_W = 32,
+    parameter A_W   = 11,
+    parameter B_W   = 12,
+    parameter PIPE  = 0
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    // configuration
+    input  wire [1:0]               policy,
+    input  wire                     mode_sel,       // mode-based: favoured client (0=FIR,1=NN)
+    input  wire                     preempt_en,
+    input  wire [2:0]               prio0, prio1,   // higher = more urgent
+    input  wire [7:0]               quantum,        // RR slice in granted MAC ops (0 = never slice)
+    input  wire [15:0]              deadline0, deadline1,   // cycles, 0 = no deadline monitoring
+    input  wire                     stat_clr,
+    // client 0 (FIR)
+    input  wire                     req0, bnd0, clr0, load0, en0,
+    input  wire signed [A_W-1:0]    a0,
+    input  wire signed [B_W-1:0]    b0,
+    input  wire signed [ACC_W-1:0]  lv0,
+    output wire                     grant0,
+    // client 1 (NN)
+    input  wire                     req1, bnd1, clr1, load1, en1,
+    input  wire signed [A_W-1:0]    a1,
+    input  wire signed [B_W-1:0]    b1,
+    input  wire signed [ACC_W-1:0]  lv1,
+    output wire                     grant1,
+    // results routed back to clients
+    output wire signed [ACC_W-1:0]  acc_out,
+    output wire                     acc_valid0, acc_valid1,
+    output wire                     ovf0, ovf1,
+    // status / waveform visibility
+    output wire [1:0]               sched_state,
+    output wire                     owner_o,
+    // metrics
+    output reg  [31:0]              m_total_cycles,
+    output reg  [31:0]              m_mac_ops,       // client MAC ops issued (restore loads excluded)
+    output reg  [15:0]              m_preempts,
+    output reg  [31:0]              m_ovh_cycles,    // cycles lost in restore (scheduling overhead)
+    output reg  [15:0]              m_tasks0, m_tasks1,
+    output reg  [31:0]              m_wait_sum0, m_wait_sum1,
+    output reg  [15:0]              m_wait_max0, m_wait_max1,
+    output reg  [15:0]              m_lat_max0,  m_lat_max1,
+    output reg  [31:0]              m_exec_sum0, m_exec_sum1,
+    output reg  [15:0]              m_miss0, m_miss1
+);

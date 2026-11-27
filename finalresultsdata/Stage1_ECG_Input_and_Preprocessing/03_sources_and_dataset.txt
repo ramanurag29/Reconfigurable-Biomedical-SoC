@@ -1,0 +1,30 @@
+# Dataset
+100.atr
+100.dat
+100.hea
+100.xws
+101.atr
+101.dat
+101.hea
+101.xws
+102-0.atr
+102.atr
+102.dat
+102.hea
+102.xws
+103.atr
+103.dat
+103.hea
+103.xws
+104.atr
+104.dat
+104.hea
+(MIT-BIH Arrhythmia DB, 360 Hz, record 100 used per testbench)
+
+# Preprocessing sources present
+./11_Scripts/decode_coeffs.py
+./11_Scripts/ecg_pipeline.py
+./11_Scripts/fir_golden_model.py
+./11_Scripts/make_verification_report.py
+./11_Scripts/nn_golden.py
+./11_Scripts/train_nn.py

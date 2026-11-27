@@ -1,0 +1,234 @@
+# 4. Digital SoC block: widths, parameters, interfaces
+
+## 04_RTL/adc/adc_frontend_behav.v
+10:    parameter N             = 10,
+11:    parameter real VREF     = 2.0,
+12:    parameter real CMP_OFFSET = 0.0,
+13:    parameter SAMPLE_CYCLES = 1
+input  wire         clk,
+input  wire         rst_n,
+input  real         vin,
+input  wire         start,
+input  wire         bypass,
+input  wire [N-1:0] bypass_data,
+input  wire         bypass_valid,
+output wire [N-1:0] adc_data,
+output wire         adc_valid,
+output wire         busy
+
+## 04_RTL/adc/cdac_behav.v
+input  wire [N-1:0] code,
+output real         vdac
+
+## 04_RTL/adc/comparator_behav.v
+input  real vin,
+input  real vdac,
+output wire cmp_out
+
+## 04_RTL/adc/sample_hold_behav.v
+input  wire sample_en,
+input  real vin,
+output real vhold
+
+## 04_RTL/adc/sar_controller.v
+14:    parameter N             = 10,
+15:    parameter SAMPLE_CYCLES = 1
+27:    localparam [1:0] S_IDLE = 2'd0, S_SAMP = 2'd1, S_CONV = 2'd2, S_FIN = 2'd3;
+input  wire         clk,
+input  wire         rst_n,
+input  wire         start,
+input  wire         cmp_out,
+output wire         sample_en,
+output wire [N-1:0] dac_code,
+output wire         busy,
+output reg          done,
+output reg  [N-1:0] data_out
+
+## 04_RTL/fir/fir_block.v
+input  wire                clk,
+input  wire                rst_n,
+input  wire                cfg_we,
+input  wire [3:0]          cfg_addr,
+input  wire [11:0]         cfg_wdata,
+input  wire [4:0]          taps_cfg,
+input  wire [4:0]          shift_cfg,
+input  wire                sample_valid,
+input  wire signed [10:0]  sample_in,
+output wire                y_valid,
+output wire signed [10:0]  y_data,
+output wire                y_sat,
+output wire                y_ovf,
+output wire                busy,
+output wire                overrun,
+output wire [7:0]          last_latency
+
+## 04_RTL/fir/fir_engine.v
+15:    parameter X_W      = 11,
+16:    parameter H_W      = 12,
+17:    parameter ACC_W    = 32,
+18:    parameter MAX_TAPS = 16
+48:    localparam [2:0] S_IDLE = 3'd0, S_CLR = 3'd1, S_MAC = 3'd2, S_DRAIN = 3'd3;
+49:    localparam [4:0] TMAX = MAX_TAPS;
+50:    localparam signed [ACC_W:0] YMAX =  (1 <<< (X_W-1)) - 1;
+51:    localparam signed [ACC_W:0] YMIN = -(1 <<< (X_W-1));
+input  wire                     clk,
+input  wire                     rst_n,
+input  wire                     sample_valid,
+input  wire signed [X_W-1:0]    sample_in,
+input  wire [4:0]               taps_cfg,
+input  wire [4:0]               shift_cfg,
+output wire [3:0]               coef_addr,
+input  wire signed [H_W-1:0]    coef_data,
+output wire                     mac_req,
+input  wire                     mac_grant,
+output wire                     mac_clear,
+output wire                     mac_en,
+output wire signed [X_W-1:0]    mac_a,
+output wire signed [H_W-1:0]    mac_b,
+input  wire signed [ACC_W-1:0]  mac_acc,
+input  wire                     mac_acc_valid,
+input  wire                     mac_overflow,
+output reg                      y_valid,
+output reg  signed [X_W-1:0]    y_data,
+output reg                      y_sat,
+output reg                      y_ovf,
+output wire                     busy,
+output wire                     at_boundary,   // 1 = safe preemption point (no MAC result pending use)
+output reg                      overrun,
+output reg  [7:0]               last_latency
+
+## 04_RTL/interfaces/input_formatter.v
+11:    parameter ADC_BITS = 10
+20:    localparam [ADC_BITS:0] MIDSCALE = (1 << (ADC_BITS-1));   // 2^(ADC_BITS-1)
+module input_formatter #(
+input  wire                       clk,
+input  wire                       rst_n,
+input  wire                       in_valid,
+input  wire [ADC_BITS-1:0]        adc_code,
+output reg                        out_valid,
+output reg  signed [ADC_BITS:0]   x_signed
+
+## 04_RTL/mac/mac_unit.v
+15:    parameter A_W      = 11,
+16:    parameter B_W      = 12,
+17:    parameter ACC_W    = 32,
+18:    parameter SATURATE = 1,
+19:    parameter PIPE     = 0
+33:    localparam P_W = A_W + B_W;
+37:    localparam signed [ACC_W-1:0] ACC_MAX = {1'b0, {(ACC_W-1){1'b1}}};
+38:    localparam signed [ACC_W-1:0] ACC_MIN = {1'b1, {(ACC_W-1){1'b0}}};
+input  wire                     clk,
+input  wire                     rst_n,
+input  wire                     en,
+input  wire                     clear,
+input  wire                     load,
+input  wire signed [A_W-1:0]    a,
+input  wire signed [B_W-1:0]    b,
+input  wire signed [ACC_W-1:0]  load_val,
+output reg  signed [ACC_W-1:0]  acc,
+output reg                      acc_valid,
+output reg                      overflow
+
+## 04_RTL/memory/output_fifo.v
+9:    parameter W     = 16,
+10:    parameter DEPTH = 16
+25:    localparam AW = $clog2(DEPTH);
+module output_fifo #(
+input  wire                  clk,
+input  wire                  rst_n,
+input  wire                  push,
+input  wire [W-1:0]          din,
+input  wire                  pop,
+input  wire                  clr_flags,
+output wire [W-1:0]          dout,
+output wire                  full,
+output wire                  empty,
+output reg  [$clog2(DEPTH):0] count,
+output reg                   overflow,
+output reg                   underflow
+
+## 04_RTL/memory/regfile_sync.v
+10:    parameter WIDTH = 12,
+11:    parameter DEPTH = 16,
+12:    parameter RESET_CLEAR = 0
+input  wire                     clk,
+input  wire                     rst_n,
+input  wire                     we,
+input  wire [$clog2(DEPTH)-1:0] waddr,
+input  wire [WIDTH-1:0]         wdata,
+input  wire [$clog2(DEPTH)-1:0] raddr,
+output wire [WIDTH-1:0]         rdata
+
+## 04_RTL/memory/sample_buffer.v
+9:    parameter W     = 11,
+10:    parameter DEPTH = 64
+21:    localparam AW = $clog2(DEPTH);
+input  wire                  clk,
+input  wire                  rst_n,
+input  wire                  wr_en,
+input  wire [W-1:0]          wr_data,
+input  wire [$clog2(DEPTH)-1:0] rd_offset,
+output wire [W-1:0]          rd_data,
+output wire                  rd_valid,
+output reg  [$clog2(DEPTH):0] count
+
+## 04_RTL/neural_network/nn_block.v
+input  wire               clk,
+input  wire               rst_n,
+input  wire               cfg_we,
+input  wire [1:0]         cfg_sel,
+input  wire [7:0]         cfg_addr,
+input  wire [23:0]        cfg_wdata,
+input  wire               start,
+input  wire [4:0]         shift_cfg,
+input  wire [15:0]        conf_thr,
+output wire               nn_valid,
+output wire               nn_class,
+output wire signed [31:0] nn_score0,
+output wire signed [31:0] nn_score1,
+output wire [15:0]        nn_margin,
+output wire               nn_lowconf,
+output wire               nn_ovf,
+output wire               busy,
+output wire [15:0]        last_latency
+
+## 04_RTL/neural_network/nn_engine.v
+15:    parameter ACC_W = 32
+52:    localparam [2:0] S_IDLE = 3'd0, S_LOAD = 3'd1, S_MAC = 3'd2, S_DRAIN = 3'd3, S_FIN = 3'd4;
+input  wire                     clk,
+input  wire                     rst_n,
+input  wire                     start,
+input  wire [4:0]               shift_cfg,     // S1 (hidden requantization shift)
+input  wire [15:0]              conf_thr,
+output wire [2:0]               feat_addr,
+input  wire signed [7:0]        feat_data,
+output wire [7:0]               w_addr,
+input  wire signed [7:0]        w_data,
+output wire [4:0]               b_addr,
+input  wire signed [23:0]       b_data,
+output wire                     mac_req,
+input  wire                     mac_grant,
+output wire                     mac_load,
+output wire signed [ACC_W-1:0]  mac_load_val,
+output wire                     mac_en,
+output wire signed [10:0]       mac_a,
+output wire signed [11:0]       mac_b,
+input  wire signed [ACC_W-1:0]  mac_acc,
+input  wire                     mac_acc_valid,
+input  wire                     mac_overflow,
+output reg                      nn_valid,
+output reg                      nn_class,
+output reg  signed [ACC_W-1:0]  nn_score0,
+output reg  signed [ACC_W-1:0]  nn_score1,
+output reg  [15:0]              nn_margin,
+output reg                      nn_lowconf,
+output reg                      nn_ovf,
+output wire                     busy,
+output wire                     at_boundary,   // 1 = safe preemption point (between MAC ops)
+output reg  [15:0]              last_latency
+
+## Register map
+
+## NN / quality specs
+features.npz
+nn_int_model.json

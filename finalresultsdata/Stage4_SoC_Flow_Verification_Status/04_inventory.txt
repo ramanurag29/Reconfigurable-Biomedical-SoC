@@ -1,0 +1,17 @@
+RTL files: 15, lines: 974
+Testbenches: 10
+tb_adc.v
+tb_adc_ecg.v
+tb_fir.v
+tb_input_formatter_ecg.v
+tb_mac.v
+tb_memory.v
+tb_nn.v
+tb_output.v
+tb_sar_controller.v
+tb_scheduler.v
+
+Missing top-level items:
+  MISSING biomed_soc_top
+  MISSING tb_soc
+  MISSING tb_config

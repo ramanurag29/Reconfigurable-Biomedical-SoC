@@ -1,0 +1,65 @@
+./11_Scripts/ecg_pipeline.py:5:MIT-BIH record -> condition -> scale to ADC range -> 10-bit quantize -> export
+./11_Scripts/ecg_pipeline.py:10:    LSB      = VREF / 2^N                            (N=10, VREF=2 V -> 1.953 mV)
+./11_Scripts/ecg_pipeline.py:14:    Vin = 1.0 V (common mode) -> D = 512 -> x_signed = 0 exactly (no midscale offset).
+./11_Scripts/ecg_pipeline.py:15:    MATLAB equivalent: D = min(max(floor(Vin/Vref*2^N),0),2^N-1).
+./11_Scripts/ecg_pipeline.py:18:    python 11_Scripts/ecg_pipeline.py --record 100 --start 10 --duration 10
+./11_Scripts/ecg_pipeline.py:27:def baseline_removal(x, fs, w1=0.2, w2=0.6):
+./11_Scripts/ecg_pipeline.py:28:    """Two-stage median filter baseline estimate (200 ms then 600 ms), subtracted."""
+./11_Scripts/ecg_pipeline.py:36:    b, a = signal.iirnotch(f0, q, fs=fs)
+./11_Scripts/ecg_pipeline.py:39:def bandpass_filter(x, fs, lo=0.5, hi=40.0, order=4):
+./11_Scripts/ecg_pipeline.py:40:    sos = signal.butter(order, [lo, hi], btype="bandpass", fs=fs, output="sos")
+./11_Scripts/ecg_pipeline.py:43:def resample_ecg(x, fs_in, fs_out):
+./11_Scripts/ecg_pipeline.py:47:    return signal.resample_poly(x, fr.numerator, fr.denominator), fs_out
+./11_Scripts/ecg_pipeline.py:49:def scale_to_adc(x_mv, xref_mv, vcm, vhalf):
+./11_Scripts/ecg_pipeline.py:50:    """Map conditioned ECG (mV) to volts around vcm. +/-xref_mv -> +/-vhalf volts."""
+./11_Scripts/ecg_pipeline.py:51:    return vcm + (x_mv / xref_mv) * vhalf
+./11_Scripts/ecg_pipeline.py:53:def quantize_adc(vin, vref, nbits):
+./11_Scripts/ecg_pipeline.py:56:    raw = np.floor(vin / vref * n).astype(np.int64)
+./11_Scripts/ecg_pipeline.py:64:    ap.add_argument("--record", default="100")
+./11_Scripts/ecg_pipeline.py:65:    ap.add_argument("--channel", default="MLII")
+./11_Scripts/ecg_pipeline.py:69:    ap.add_argument("--vref", type=float, default=2.0)
+./11_Scripts/ecg_pipeline.py:70:    ap.add_argument("--vcm", type=float, default=1.0)
+./11_Scripts/ecg_pipeline.py:71:    ap.add_argument("--vhalf", type=float, default=0.5, help="conditioned swing +/- about vcm")
+./11_Scripts/ecg_pipeline.py:74:    ap.add_argument("--notch", action="store_true", help="enable 50 Hz notch")
+./11_Scripts/ecg_pipeline.py:77:                    help="percentile of |conditioned| (whole record) mapped to full swing")
+./11_Scripts/ecg_pipeline.py:83:    # A. load real record + annotations
+./11_Scripts/ecg_pipeline.py:84:    rec = wfdb.rdrecord(os.path.join(a.db, a.record))
+./11_Scripts/ecg_pipeline.py:85:    ann = wfdb.rdann(os.path.join(a.db, a.record), "atr")
+./11_Scripts/ecg_pipeline.py:87:    fs = float(rec.fs)
+./11_Scripts/ecg_pipeline.py:89:    print(f"record {a.record}: {len(raw_mv)} samples @ {fs} Hz, channel {a.channel} "
+./11_Scripts/ecg_pipeline.py:92:    # C-E. conditioning on the whole record (filters need context), then slice
+./11_Scripts/ecg_pipeline.py:93:    x = baseline_removal(raw_mv, fs)
+./11_Scripts/ecg_pipeline.py:94:    if a.notch:
+./11_Scripts/ecg_pipeline.py:97:    # H. resample only if target rate differs
+./11_Scripts/ecg_pipeline.py:98:    x, fs_out = resample_ecg(x, fs, a.fs_target)
+./11_Scripts/ecg_pipeline.py:99:    raw_rs, _ = resample_ecg(raw_mv - np.mean(raw_mv), fs, a.fs_target)
+./11_Scripts/ecg_pipeline.py:101:    # G. normalisation/scaling (reference taken from whole record -> stable gain)
+./11_Scripts/ecg_pipeline.py:103:    vin_full = scale_to_adc(x, xref, a.vcm, a.vhalf)
+./11_Scripts/ecg_pipeline.py:107:    vmin, vmax = a.vcm - a.vhalf, a.vcm + a.vhalf
+./11_Scripts/ecg_pipeline.py:112:    code, adc_sat = quantize_adc(vin, a.vref, a.bits)
+./11_Scripts/ecg_pipeline.py:116:    lsb = a.vref / (1 << a.bits)
+./11_Scripts/ecg_pipeline.py:124:        record=a.record, channel=a.channel, fs_hz=fs_out, start_s=a.start, n_samples=int(N),
+./11_Scripts/ecg_pipeline.py:125:        bits=a.bits, vref=a.vref, vcm=a.vcm, vswing=[vmin, vmax], lsb_mV=lsb * 1e3,
+./11_Scripts/ecg_pipeline.py:133:        notch=bool(a.notch), bandpass_Hz=[a.hp, a.lp])
+./11_Scripts/ecg_pipeline.py:166:    ax[0].set_title(f"MIT-BIH {a.record} {a.channel}: raw -> conditioned -> 10-bit")
+./11_Scripts/train_nn.py:3:train_nn.py - ECG beat classifier (Normal vs Abnormal) for the 8->16->2 shared-MAC NN.
+./11_Scripts/train_nn.py:5:  1. features: 8 per-beat features from MIT-BIH (cached in 03_AI_Model/features.npz)
+./11_Scripts/train_nn.py:6:  2. patient-independent split: de Chazal DS1 (train) / DS2 (test); record 202 dropped from DS2
+./11_Scripts/train_nn.py:7:     (same patient as 201, which is in DS1); paced records 102/104/107/217 excluded
+./11_Scripts/train_nn.py:22:NORMAL = set("NLRej"); ABNORMAL = set("AaJSVEF"); BEATS = NORMAL | ABNORMAL | set("/fQ")
+./11_Scripts/train_nn.py:27:def extract_record(rec):
+./11_Scripts/train_nn.py:29:    from ecg_pipeline import baseline_removal, bandpass_filter
+./11_Scripts/train_nn.py:32:        base = loc[0][:-4]; r = wfdb.rdrecord(base, channels=[0]); a = wfdb.rdann(base, "atr")
+./11_Scripts/train_nn.py:34:        r = wfdb.rdrecord(str(rec), pn_dir="mitdb", channels=[0]); a = wfdb.rdann(str(rec), "atr", pn_dir="mitdb")
+./11_Scripts/train_nn.py:35:    fs = r.fs; x = r.p_signal[:, 0].astype(float)
+./11_Scripts/train_nn.py:36:    x = bandpass_filter(baseline_removal(x, fs), fs, 0.5, 40.0)
+./11_Scripts/train_nn.py:37:    idx = [(s, c) for s, c in zip(a.sample, a.symbol) if c in BEATS]
+./11_Scripts/train_nn.py:67:            f, y = extract_record(r); Fs.append(f); Ys.append(y); print(f"  record {r}: {len(y)} beats ({int(y.sum())} abnormal)", flush=True)
+./11_Scripts/train_nn.py:109:    res = {"synthetic": bool(a.synthetic), "train_beats": int(len(ytr)), "test_beats": int(len(yte)), "test_abnormal": int(yte.sum()),
+./11_Scripts/train_nn.py:115:           "split": "DS1 train / DS2 test by record (patient-independent; 202 dropped, same patient as 201)"}
+./11_Scripts/make_verification_report.py:7: "adc": ("behavioural SAR ADC (S&H, comparator, CDAC, controller, bypass)", "zero/mid/full scale, over-range, 2046 boundary points, 3072-pt ramp, 360-pt sine, 3000 random, hold test, bypass, reset; second DUT with +1 LSB comparator offset", "D = clamp(floor(vin/LSB),0,1023); |error| <= LSB/2; latency 12", "-"),
+./11_Scripts/fir_golden_model.py:7:Design: Hamming-window low-pass, fc = 40 Hz @ 360 Hz (T = 8 and 16). Pure integer arithmetic in
+./11_Scripts/fir_golden_model.py:24:    h = signal.firwin(taps, FC, fs=FS, window="hamming")
+./11_Scripts/fir_golden_model.py:50:        w, Hf = signal.freqz(h, worN=2048, fs=FS)
+./11_Scripts/fir_golden_model.py:51:        _, Hq = signal.freqz(hq / (1 << (HW - 1)), worN=2048, fs=FS)
+./11_Scripts/nn_golden.py:8:  weights  : int8   per layer scale s1 / s2 (max|w| -> 127)

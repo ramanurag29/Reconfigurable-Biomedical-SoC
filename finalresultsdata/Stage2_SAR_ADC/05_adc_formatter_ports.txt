@@ -1,0 +1,61 @@
+// ==== 04_RTL/adc/adc_frontend_behav.v
+module adc_frontend_behav #(
+    parameter N             = 10,
+    parameter real VREF     = 2.0,
+    parameter real CMP_OFFSET = 0.0,
+    parameter SAMPLE_CYCLES = 1
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    input  real         vin,
+    input  wire         start,
+    input  wire         bypass,
+    input  wire [N-1:0] bypass_data,
+    input  wire         bypass_valid,
+    output wire [N-1:0] adc_data,
+    output wire         adc_valid,
+    output wire         busy
+);
+// ==== 04_RTL/adc/cdac_behav.v
+module cdac_behav #(parameter N = 10, parameter real VREF = 2.0) (
+    input  wire [N-1:0] code,
+    output real         vdac
+);
+// ==== 04_RTL/adc/comparator_behav.v
+module comparator_behav #(parameter real OFFSET = 0.0) (
+    input  real vin,
+    input  real vdac,
+    output wire cmp_out
+);
+// ==== 04_RTL/adc/sample_hold_behav.v
+module sample_hold_behav (
+    input  wire sample_en,
+    input  real vin,
+    output real vhold
+);
+// ==== 04_RTL/adc/sar_controller.v
+module sar_controller #(
+    parameter N             = 10,
+    parameter SAMPLE_CYCLES = 1
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    input  wire         start,
+    input  wire         cmp_out,
+    output wire         sample_en,
+    output wire [N-1:0] dac_code,
+    output wire         busy,
+    output reg          done,
+    output reg  [N-1:0] data_out
+);
+// ==== 04_RTL/interfaces/input_formatter.v
+module input_formatter #(
+    parameter ADC_BITS = 10
+) (
+    input  wire                       clk,
+    input  wire                       rst_n,
+    input  wire                       in_valid,
+    input  wire [ADC_BITS-1:0]        adc_code,
+    output reg                        out_valid,
+    output reg  signed [ADC_BITS:0]   x_signed
+);

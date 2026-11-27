@@ -11,6 +11,8 @@ META = {
  "output": ("output_fifo", "90k random cycles in push-heavy / pop-heavy / balanced phases", "log-based model incl. full/empty/count/overflow/underflow", "-"),
  "nn": ("nn_engine + nn_block (private MAC PIPE=0/1)", "64 test vectors from the trained 8-16-2 model; 300 random stress trials (full-range int8 weights, int24 biases, random shift/threshold); tie; start-while-busy; reset mid-inference", "bit-exact Python golden (nn_golden.infer_int) and in-TB 64-bit integer reference: scores, class, margin, low-confidence flag; latency 197 (PIPE0) / 215 (PIPE1) clocks", "tb_nn.vcd"),
  "fir": ("fir_engine + fir_block (private MAC PIPE=0/1)", "ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset", "Python bit-exact golden (ECG) and in-TB integer reference (stress)", "-"),
+ "scheduler": ("task_scheduler + shared mac_unit + fir_engine + nn_engine (MAC PIPE=0)", "fixed-priority / round-robin / mode-based contention, preemption with accumulator save/restore, non-preemptive mode, deadline monitor, FIR stream during NN, reset mid-contention, 300 random trials", "bit-exact in-TB integer golden for FIR and NN results; exact MAC-op accounting (FIR 1+T, NN 178); preemption counts", "tb_scheduler.vcd"),
+ "scheduler_p1": ("task_scheduler with pipelined MAC (PIPE=1)", "same testbench, -Ptb_scheduler.PIPE=1", "same checks; exercises the PIPE+1 restore wait and the drain-before-switch rule", "-"),
 }
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 out = ["# Verification report (auto-generated)", "", f"Generated {now} by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. "

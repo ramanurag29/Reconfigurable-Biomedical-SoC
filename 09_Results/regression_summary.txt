@@ -7,3 +7,5 @@ tb_memory              PASS
 tb_output              PASS
 tb_fir                 PASS
 tb_nn                  PASS
+tb_scheduler           PASS
+tb_scheduler_p1        PASS

@@ -1,0 +1,8 @@
+Partial/Required:  2.26, Required:    400.0, Partial:   904.89, Net: _06450_, Pin: _30900_/A0, Layer: met1
+Partial/Required:  1.37, Required:    400.0, Partial:   548.38, Net: net374, Pin: fanout372/A, Layer: met1
+Partial/Required:  1.19, Required:    400.0, Partial:   474.89, Net: u_host.quantum\[0\], Pin: _24596_/B, Layer: met1
+Partial/Required:  1.17, Required:    400.0, Partial:   466.67, Net: _05960_, Pin: _27104_/A1, Layer: met1
+Partial/Required:  1.13, Required:    400.0, Partial:   451.11, Net: _05278_, Pin: _31201_/A1, Layer: met1
+Partial/Required:  1.07, Required:    400.0, Partial:   428.67, Net: _05264_, Pin: _26028_/A0, Layer: met1
+Partial/Required:  1.06, Required:    400.0, Partial:   425.22, Net: u_host.metrics_in\[320\], Pin: _19913_/A, Layer: met1
+Partial/Required:  1.04, Required:    400.0, Partial:   416.25, Net: _06674_, Pin: _28756_/A, Layer: met1

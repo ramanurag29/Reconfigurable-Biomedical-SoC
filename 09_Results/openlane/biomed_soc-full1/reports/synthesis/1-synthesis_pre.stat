@@ -1,0 +1,29 @@
+
+60. Printing statistics.
+
+=== biomed_soc_top ===
+
+   Number of wires:              18056
+   Number of wire bits:          22898
+   Number of public wires:         489
+   Number of public wire bits:    5208
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:              22561
+     $_ANDNOT_                    4871
+     $_AND_                        549
+     $_DFFE_PN0P_                 1397
+     $_DFFE_PN1P_                   31
+     $_DFFE_PP_                   3200
+     $_DFF_PN0_                    136
+     $_DFF_PN1_                      2
+     $_MUX_                       3522
+     $_NAND_                       619
+     $_NOR_                        631
+     $_NOT_                       2105
+     $_ORNOT_                      701
+     $_OR_                        2882
+     $_XNOR_                       508
+     $_XOR_                       1407
+

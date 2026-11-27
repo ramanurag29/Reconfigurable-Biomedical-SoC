@@ -13,10 +13,12 @@ META = {
  "fir": ("fir_engine + fir_block (private MAC PIPE=0/1)", "ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset", "Python bit-exact golden (ECG) and in-TB integer reference (stress)", "-"),
  "scheduler": ("task_scheduler + shared mac_unit + fir_engine + nn_engine (MAC PIPE=0)", "fixed-priority / round-robin / mode-based contention, preemption with accumulator save/restore, non-preemptive mode, deadline monitor, FIR stream during NN, reset mid-contention, 300 random trials", "bit-exact in-TB integer golden for FIR and NN results; exact MAC-op accounting (FIR 1+T, NN 178); preemption counts", "tb_scheduler.vcd"),
  "scheduler_p1": ("task_scheduler with pipelined MAC (PIPE=1)", "same testbench, -Ptb_scheduler.PIPE=1", "same checks; exercises the PIPE+1 restore wait and the drain-before-switch rule", "-"),
+ "config": ("host_regs through biomed_soc_top (register map)", "reset defaults, write/read-back of all RW fields, 4-tap impulse through the coefficient memory, sample-buffer read-back, empty pop, IRQ level/sticky/W1C, soft reset", "documented defaults (06_register_map.md), integer FIR reference, preserved configuration after soft reset", "-"),
+ "soc": ("biomed_soc_top (full digital SoC, shared MAC)", "P1 3600 ECG samples by direct injection + 64 NN vectors, fixed FIR>NN preemptive; P2 same through the behavioural SAR ADC on the analog pins (real ECG volts); P3 noisy/clipped/flat/baseline ECG; P4 round-robin", "bit-exact Python goldens for every FIR output, NN score/class/margin/lowconf and quality window; decision rule uncertain = lowconf|ovf|POOR; no lost records/overrun", "-"),
 }
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 out = ["# Verification report (auto-generated)", "", f"Generated {now} by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. "
-       "Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.", "",
+       "Simulator: Icarus Verilog. Synthesis/timing/layout results are reported separately (09_Results/openlane).", "",
        "| Testbench | Unit under test | Input | Expected | Waveform |", "|---|---|---|---|---|"]
 for k, (uut, inp, exp, wf) in META.items():
     out.append(f"| tb_{k} | {uut} | {inp} | {exp} | {wf} |")

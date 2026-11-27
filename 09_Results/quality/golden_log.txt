@@ -1,0 +1,14 @@
+clean w0 clean            -> GOOD     score=255 flags=0000 p2p=248 mad=1 mean=-2
+clean w1 clean            -> GOOD     score=255 flags=0000 p2p=245 mad=2 mean=-1
+clean w2 clean            -> GOOD     score=255 flags=0000 p2p=243 mad=2 mean=0
+clean w3 clean            -> GOOD     score=255 flags=0000 p2p=266 mad=2 mean=0
+clean w4 clean            -> GOOD     score=255 flags=0000 p2p=247 mad=1 mean=-3
+clean w5 clean            -> GOOD     score=255 flags=0000 p2p=264 mad=2 mean=-1
+clean w6 clean            -> GOOD     score=255 flags=0000 p2p=249 mad=2 mean=0
+noisy w0 clean            -> GOOD     score=255 flags=0000 p2p=248 mad=1 mean=-2
+noisy w1 clean            -> GOOD     score=255 flags=0000 p2p=245 mad=2 mean=-1
+noisy w2 gauss_noise_s30  -> MODERATE score=207 flags=0100 p2p=340 mad=32 mean=-4
+noisy w3 gauss_noise_s30  -> MODERATE score=207 flags=0100 p2p=329 mad=31 mean=0
+noisy w4 clipped_gain4    -> POOR     score=175 flags=0001 p2p=671 mad=5 mean=-14
+noisy w5 flat_leadoff     -> POOR     score=127 flags=0110 p2p=12 mad=2 mean=0
+noisy w6 baseline_+150    -> MODERATE score=223 flags=1000 p2p=249 mad=2 mean=150

@@ -228,8 +228,8 @@ module task_scheduler #(
             end
             if (done0) begin
                 m_tasks0 <= m_tasks0 + 1;
-                m_wait_sum0 <= m_wait_sum0 + wait_c0;
-                m_exec_sum0 <= m_exec_sum0 + exe_c0;
+                m_wait_sum0 <= m_wait_sum0 + {16'd0, wait_c0};
+                m_exec_sum0 <= m_exec_sum0 + {16'd0, exe_c0};
                 if (wait_c0 > m_wait_max0) m_wait_max0 <= wait_c0;
                 if (lat_f0  > m_lat_max0)  m_lat_max0  <= lat_f0;
                 if (deadline0 != 0 && lat_f0 > deadline0) m_miss0 <= m_miss0 + 1;
@@ -242,8 +242,8 @@ module task_scheduler #(
             end
             if (done1) begin
                 m_tasks1 <= m_tasks1 + 1;
-                m_wait_sum1 <= m_wait_sum1 + wait_c1;
-                m_exec_sum1 <= m_exec_sum1 + exe_c1;
+                m_wait_sum1 <= m_wait_sum1 + {16'd0, wait_c1};
+                m_exec_sum1 <= m_exec_sum1 + {16'd0, exe_c1};
                 if (wait_c1 > m_wait_max1) m_wait_max1 <= wait_c1;
                 if (lat_f1  > m_lat_max1)  m_lat_max1  <= lat_f1;
                 if (deadline1 != 0 && lat_f1 > deadline1) m_miss1 <= m_miss1 + 1;

@@ -98,7 +98,7 @@ module nn_engine #(
         end else begin
             nn_valid <= 1'b0;
             if (state != S_IDLE) begin
-                pend_ops <= pend_ops + issue - mac_acc_valid;
+                pend_ops <= pend_ops + {2'b00, issue} - {2'b00, mac_acc_valid};
                 if (lat != 16'hFFFF) lat <= lat + 16'd1;
             end
             case (state)

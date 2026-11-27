@@ -1,0 +1,16 @@
+  [P1 cfgB fixed FIR>NN] cycles=96208 mac_ops=72592 util=75% preempts=3581 restore_ovh=7162 tasks FIR/NN=3600/64
+  [P1 cfgB fixed FIR>NN] wait avg x100 FIR=109 NN=128925 cyc, wait max FIR/NN=3/4467, NN latency avg/max=1486/4664 cyc
+[P1 cfgB fixed FIR>NN] FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 -> PASS
+  [P2 cfgA SAR ADC] cycles=172900 mac_ops=72592 util=41% preempts=447 restore_ovh=894 tasks FIR/NN=3600/64
+  [P2 cfgA SAR ADC] wait avg x100 FIR=101 NN=17050 cyc, wait max FIR/NN=2/171, NN latency avg/max=367/368 cyc
+[P2 cfgA SAR ADC] FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 -> PASS
+  P3 NN decisions made while quality was POOR: 5 (all reported uncertain)
+  [P3 noisy quality] cycles=95840 mac_ops=72320 util=75% preempts=3565 restore_ovh=7130 tasks FIR/NN=3584/64
+  [P3 noisy quality] wait avg x100 FIR=109 NN=128350 cyc, wait max FIR/NN=3/4467, NN latency avg/max=1480/4664 cyc
+[P3 noisy quality] FIR=0 QUAL=7 NN=64 (uncertain 26, abnormal 11) errors=0 -> PASS
+  [P4 cfgB round-robin] cycles=288008 mac_ops=72592 util=25% preempts=3264 restore_ovh=6528 tasks FIR/NN=3600/64
+  [P4 cfgB round-robin] wait avg x100 FIR=519 NN=26700 cyc, wait max FIR/NN=43/267, NN latency avg/max=464/464 cyc
+[P4 cfgB round-robin] FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 -> PASS
+
+*** ALL TESTS PASSED (biomed_soc_top) ***
+05_Testbench/tb_soc.v:290: $finish called at 6532336000 (1ps)

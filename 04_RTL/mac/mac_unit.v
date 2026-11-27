@@ -57,7 +57,7 @@ module mac_unit #(
     wire signed [P_W-1:0]   x_prod  = PIPE ? s_prod  : prod_c;
     wire signed [ACC_W-1:0] x_lv    = PIPE ? s_lv    : load_val;
 
-    wire signed [ACC_W:0] sum_full = acc + x_prod;               // ACC_W+1 bits, sign-extended
+    wire signed [ACC_W:0] sum_full = $signed({acc[ACC_W-1], acc}) + $signed({{(ACC_W+1-P_W){x_prod[P_W-1]}}, x_prod});               // ACC_W+1 bits, sign-extended
     wire                  ovf_now  = (sum_full[ACC_W] != sum_full[ACC_W-1]);
 
     always @(posedge clk or negedge rst_n) begin

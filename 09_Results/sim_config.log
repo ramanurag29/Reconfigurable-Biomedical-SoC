@@ -1,0 +1,4 @@
+[register map / host interface] errors=0 -> PASS
+
+*** ALL TESTS PASSED (tb_config) ***
+05_Testbench/tb_config.v:140: $finish called at 10496000 (1ps)

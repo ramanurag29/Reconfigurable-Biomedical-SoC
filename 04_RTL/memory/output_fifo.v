@@ -41,7 +41,7 @@ module output_fifo #(
             if (pop  && empty) underflow <= 1'b1;
             if (do_push) begin mem[wptr] <= din; wptr <= wptr + 1'b1; end
             if (do_pop)  rptr <= rptr + 1'b1;
-            count <= count + do_push - do_pop;
+            count <= count + {{AW{1'b0}}, do_push} - {{AW{1'b0}}, do_pop};
         end
     end
 endmodule

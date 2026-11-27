@@ -7,10 +7,5 @@ __pycache__/
 *.vvp
 06_Simulation/*.compile.log
 03_AI_Model/features.npz
-03_AI_Model/features.npz
-pycache/
-pycache/
-*.pyc
-.venv/
 finalresultsdata.zip
-*.vcd
+09_Results/openlane/**/final/*.gds

@@ -23,7 +23,7 @@ module fir_block #(parameter PIPE = 0) (
     output wire                overrun,
     output wire [7:0]          last_latency
 );
-    wire [3:0] coef_addr; wire [11:0] coef_data;
+    wire [3:0] coef_addr; wire signed [11:0] coef_data;
     wire mac_req, mac_clear, mac_en, mac_acc_valid, mac_overflow;
     wire signed [10:0] mac_a; wire signed [11:0] mac_b; wire signed [31:0] mac_acc;
 
@@ -31,11 +31,11 @@ module fir_block #(parameter PIPE = 0) (
         .waddr(cfg_addr), .wdata(cfg_wdata), .raddr(coef_addr), .rdata(coef_data));
 
     fir_engine u_fir (.clk(clk), .rst_n(rst_n), .sample_valid(sample_valid), .sample_in(sample_in),
-        .taps_cfg(taps_cfg), .shift_cfg(shift_cfg), .coef_addr(coef_addr), .coef_data($signed(coef_data)),
+        .taps_cfg(taps_cfg), .shift_cfg(shift_cfg), .coef_addr(coef_addr), .coef_data(coef_data),
         .mac_req(mac_req), .mac_grant(1'b1), .mac_clear(mac_clear), .mac_en(mac_en),
         .mac_a(mac_a), .mac_b(mac_b), .mac_acc(mac_acc), .mac_acc_valid(mac_acc_valid),
         .mac_overflow(mac_overflow), .y_valid(y_valid), .y_data(y_data), .y_sat(y_sat),
-        .y_ovf(y_ovf), .busy(busy), .overrun(overrun), .last_latency(last_latency));
+        .y_ovf(y_ovf), .busy(busy), .at_boundary(), .overrun(overrun), .last_latency(last_latency));
 
     mac_unit #(.A_W(11), .B_W(12), .ACC_W(32), .SATURATE(1), .PIPE(PIPE)) u_mac (
         .clk(clk), .rst_n(rst_n), .en(mac_en), .clear(mac_clear), .load(1'b0),

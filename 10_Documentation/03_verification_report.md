@@ -1,6 +1,6 @@
 # Verification report (auto-generated)
 
-Generated 2026-11-27 07:27 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Nothing here has been synthesized, timed or placed yet.
+Generated 2026-11-27 14:02 by `11_Scripts/make_verification_report.py` from `09_Results/sim_*.log`. Simulator: Icarus Verilog. Synthesis/timing/layout results are reported separately (09_Results/openlane).
 
 | Testbench | Unit under test | Input | Expected | Waveform |
 |---|---|---|---|---|
@@ -15,6 +15,8 @@ Generated 2026-11-27 07:27 by `11_Scripts/make_verification_report.py` from `09_
 | tb_fir | fir_engine + fir_block (private MAC PIPE=0/1) | ECG 16/8 taps; latency; 600 random stress trials (random taps/shift/coefs, saturation); overrun; reset | Python bit-exact golden (ECG) and in-TB integer reference (stress) | - |
 | tb_scheduler | task_scheduler + shared mac_unit + fir_engine + nn_engine (MAC PIPE=0) | fixed-priority / round-robin / mode-based contention, preemption with accumulator save/restore, non-preemptive mode, deadline monitor, FIR stream during NN, reset mid-contention, 300 random trials | bit-exact in-TB integer golden for FIR and NN results; exact MAC-op accounting (FIR 1+T, NN 178); preemption counts | tb_scheduler.vcd |
 | tb_scheduler_p1 | task_scheduler with pipelined MAC (PIPE=1) | same testbench, -Ptb_scheduler.PIPE=1 | same checks; exercises the PIPE+1 restore wait and the drain-before-switch rule | - |
+| tb_config | host_regs through biomed_soc_top (register map) | reset defaults, write/read-back of all RW fields, 4-tap impulse through the coefficient memory, sample-buffer read-back, empty pop, IRQ level/sticky/W1C, soft reset | documented defaults (06_register_map.md), integer FIR reference, preserved configuration after soft reset | - |
+| tb_soc | biomed_soc_top (full digital SoC, shared MAC) | P1 3600 ECG samples by direct injection + 64 NN vectors, fixed FIR>NN preemptive; P2 same through the behavioural SAR ADC on the analog pins (real ECG volts); P3 noisy/clipped/flat/baseline ECG; P4 round-robin | bit-exact Python goldens for every FIR output, NN score/class/margin/lowconf and quality window; decision rule uncertain = lowconf|ovf|POOR; no lost records/overrun | - |
 
 ## Results (actual, copied from simulation logs)
 
@@ -113,6 +115,13 @@ Generated 2026-11-27 07:27 by `11_Scripts/make_verification_report.py` from `09_
 | tb_scheduler_p1 | T10 clean run after reset —  | PASS |
 | tb_scheduler_p1 | als: FIR+NN bit-exact, ops exact —  | PASS |
 | tb_scheduler_p1 | **overall** | **PASS** |
+| tb_config | register map / host interface — errors=0 | PASS |
+| tb_config | **overall** | **PASS** |
+| tb_soc | P1 cfgB fixed FIR>NN — FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 | PASS |
+| tb_soc | P2 cfgA SAR ADC — FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 | PASS |
+| tb_soc | P3 noisy quality — FIR=0 QUAL=7 NN=64 (uncertain 26, abnormal 11) errors=0 | PASS |
+| tb_soc | P4 cfgB round-robin — FIR=3600 QUAL=7 NN=64 (uncertain 21, abnormal 11) errors=0 | PASS |
+| tb_soc | **overall** | **PASS** |
 
 **Overall: ALL PASS**
 

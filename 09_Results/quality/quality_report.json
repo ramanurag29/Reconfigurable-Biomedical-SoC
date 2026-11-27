@@ -1,0 +1,161 @@
+{
+ "config": {
+  "win_log2": 9,
+  "clip_max": 4,
+  "amp_min": 40,
+  "noise_k": 1,
+  "base_max": 64
+ },
+ "window_samples": 512,
+ "clean": [
+  {
+   "window": 0,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 248,
+   "mad": 1,
+   "mean": -2
+  },
+  {
+   "window": 1,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 245,
+   "mad": 2,
+   "mean": -1
+  },
+  {
+   "window": 2,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 243,
+   "mad": 2,
+   "mean": 0
+  },
+  {
+   "window": 3,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 266,
+   "mad": 2,
+   "mean": 0
+  },
+  {
+   "window": 4,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 247,
+   "mad": 1,
+   "mean": -3
+  },
+  {
+   "window": 5,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 264,
+   "mad": 2,
+   "mean": -1
+  },
+  {
+   "window": 6,
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 249,
+   "mad": 2,
+   "mean": 0
+  }
+ ],
+ "noisy": [
+  {
+   "window": 0,
+   "injected": "clean",
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 248,
+   "mad": 1,
+   "mean": -2
+  },
+  {
+   "window": 1,
+   "injected": "clean",
+   "quality": "GOOD",
+   "cls": 0,
+   "flags": 0,
+   "score": 255,
+   "p2p": 245,
+   "mad": 2,
+   "mean": -1
+  },
+  {
+   "window": 2,
+   "injected": "gauss_noise_s30",
+   "quality": "MODERATE",
+   "cls": 1,
+   "flags": 4,
+   "score": 207,
+   "p2p": 340,
+   "mad": 32,
+   "mean": -4
+  },
+  {
+   "window": 3,
+   "injected": "gauss_noise_s30",
+   "quality": "MODERATE",
+   "cls": 1,
+   "flags": 4,
+   "score": 207,
+   "p2p": 329,
+   "mad": 31,
+   "mean": 0
+  },
+  {
+   "window": 4,
+   "injected": "clipped_gain4",
+   "quality": "POOR",
+   "cls": 2,
+   "flags": 1,
+   "score": 175,
+   "p2p": 671,
+   "mad": 5,
+   "mean": -14
+  },
+  {
+   "window": 5,
+   "injected": "flat_leadoff",
+   "quality": "POOR",
+   "cls": 2,
+   "flags": 6,
+   "score": 127,
+   "p2p": 12,
+   "mad": 2,
+   "mean": 0
+  },
+  {
+   "window": 6,
+   "injected": "baseline_+150",
+   "quality": "MODERATE",
+   "cls": 1,
+   "flags": 8,
+   "score": 223,
+   "p2p": 249,
+   "mad": 2,
+   "mean": 150
+  }
+ ]
+}

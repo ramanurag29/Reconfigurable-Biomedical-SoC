@@ -26,7 +26,7 @@ module nn_block #(parameter PIPE = 0) (
     output wire [15:0]        last_latency
 );
     wire [2:0] feat_addr; wire [7:0] w_addr; wire [4:0] b_addr;
-    wire [7:0] feat_data, w_data; wire [23:0] b_data;
+    wire signed [7:0] feat_data, w_data; wire signed [23:0] b_data;
     wire mac_req, mac_load, mac_en, mac_acc_valid, mac_overflow;
     wire signed [31:0] mac_load_val, mac_acc; wire signed [10:0] mac_a; wire signed [11:0] mac_b;
 
@@ -38,12 +38,12 @@ module nn_block #(parameter PIPE = 0) (
         .waddr(cfg_addr[2:0]), .wdata(cfg_wdata[7:0]), .raddr(feat_addr), .rdata(feat_data));
 
     nn_engine u_nn (.clk(clk), .rst_n(rst_n), .start(start), .shift_cfg(shift_cfg), .conf_thr(conf_thr),
-        .feat_addr(feat_addr), .feat_data($signed(feat_data)), .w_addr(w_addr), .w_data($signed(w_data)),
-        .b_addr(b_addr), .b_data($signed(b_data)),
+        .feat_addr(feat_addr), .feat_data(feat_data), .w_addr(w_addr), .w_data(w_data),
+        .b_addr(b_addr), .b_data(b_data),
         .mac_req(mac_req), .mac_grant(1'b1), .mac_load(mac_load), .mac_load_val(mac_load_val), .mac_en(mac_en),
         .mac_a(mac_a), .mac_b(mac_b), .mac_acc(mac_acc), .mac_acc_valid(mac_acc_valid), .mac_overflow(mac_overflow),
         .nn_valid(nn_valid), .nn_class(nn_class), .nn_score0(nn_score0), .nn_score1(nn_score1),
-        .nn_margin(nn_margin), .nn_lowconf(nn_lowconf), .nn_ovf(nn_ovf), .busy(busy), .last_latency(last_latency));
+        .nn_margin(nn_margin), .nn_lowconf(nn_lowconf), .nn_ovf(nn_ovf), .busy(busy), .at_boundary(), .last_latency(last_latency));
 
     mac_unit #(.A_W(11), .B_W(12), .ACC_W(32), .SATURATE(1), .PIPE(PIPE)) u_mac (
         .clk(clk), .rst_n(rst_n), .en(mac_en), .clear(1'b0), .load(mac_load),
